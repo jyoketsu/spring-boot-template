@@ -1,0 +1,19 @@
+services:
+  mysql:
+    image: 'mysql:latest'
+    environment:
+      - 'MYSQL_DATABASE=mydatabase'
+      - 'MYSQL_PASSWORD=secret'
+      - 'MYSQL_ROOT_PASSWORD=verysecret'
+      - 'MYSQL_USER=myuser'
+      - 'TZ=Asia/Shanghai'
+      - 'MYSQL_CHARACTER_SET_SERVER=utf8mb4'
+      - 'MYSQL_COLLATION_SERVER=utf8mb4_unicode_ci'
+    ports:
+      - '3306:3306'
+    volumes:
+      - mysql_data:/var/lib/mysql # 使用命名卷挂载 MySQL 数据目录
+    restart: unless-stopped
+
+volumes:
+  mysql_data: {} # 声明命名卷
