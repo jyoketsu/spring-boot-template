@@ -3,11 +3,9 @@ package com.example.demo.controller;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.demo.model.Ingredient;
-import com.example.demo.repository.IngredientRepository;
+import com.example.demo.service.IngredientService;
 
 import java.util.List;
-import java.util.Optional;
-
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -22,71 +20,54 @@ import org.springframework.web.bind.annotation.PutMapping;
 @RequestMapping("/api/ingredient")
 public class IngredientController {
 
-	private final IngredientRepository ingredientRepository;
+	private final IngredientService ingredientService;
 
-	public IngredientController(IngredientRepository ingredientRepository) {
-		this.ingredientRepository = ingredientRepository;
+	// 在Spring 4.3及之后的版本中，如果一个类只有一个构造函数，Spring 会自动将其作为依赖注入的目标，即使没有标注 @Autowired注解。
+	public IngredientController(IngredientService ingredientService) {
+		this.ingredientService = ingredientService;
 	}
 
 	@GetMapping
 	public ResponseEntity<List<Ingredient>> getAllIngredients() {
-		List<Ingredient> ingredients = ingredientRepository.findAll();
+		List<Ingredient> ingredients = ingredientService.getAllIngredients();
 		return ResponseEntity.ok(ingredients);
 	}
-	
+
 	@GetMapping("/{id}")
 	public ResponseEntity<Ingredient> getIngredientById(@PathVariable Long id) {
-
-		// Java 8 的 Optional 和 Lambda 表达式
-		return ingredientRepository.findById(id)
-				// 如果 Optional 中有值（即找到了对应的 Ingredient），map
-				// 会将值（Ingredient）传递给方法ResponseEntity.ok()
-				.map(ResponseEntity::ok)
-				// 如果 Optional 是空的（即没有找到对应的 Ingredient），执行 orElse 中的逻辑
-				.orElse(ResponseEntity.notFound().build());
-
-		// 传统写法（不使用 Optional）
-		// Optional<Ingredient> optionalIngredient = ingredientRepository.findById(id);
-		// if (optionalIngredient.isPresent()) {
-		// return ResponseEntity.ok(optionalIngredient.get());
-		// } else {
-		// return ResponseEntity.notFound().build();
-		// }
-	}
-
-
-	@GetMapping("/search")
-	public ResponseEntity<List<Ingredient>> getIngredientByName(@RequestParam String name) {
-		List<Ingredient> ingredients = ingredientRepository.findByName(name);
-		return ResponseEntity.ok(ingredients);
-	}
-
-	@PostMapping
-	public ResponseEntity<Ingredient> addIngredient(@RequestBody Ingredient ingredient) {
-		Ingredient savedIngredient = ingredientRepository.save(ingredient);
-		return ResponseEntity.ok(savedIngredient);
-	}
-
-	@DeleteMapping("/{id}")
-	public ResponseEntity<Void> deleteIngredient(@PathVariable Long id) {
-		Optional<Ingredient> optionalIngredient = ingredientRepository.findById(id);
-		if (optionalIngredient.isPresent()) {
-			ingredientRepository.delete(optionalIngredient.get());
-			return ResponseEntity.noContent().build();
+		Ingredient ingredient = ingredientService.getIngredientById(id);
+		if (ingredient != null) {
+			return ResponseEntity.ok(ingredient);
 		} else {
 			return ResponseEntity.notFound().build();
 		}
 	}
 
+	@GetMapping("/search")
+	public ResponseEntity<List<Ingredient>> getIngredientByName(@RequestParam String name) {
+		List<Ingredient> ingredients = ingredientService.getIngredientByName(name);
+		return ResponseEntity.ok(ingredients);
+	}
+
+	@PostMapping
+	public ResponseEntity<Ingredient> addIngredient(@RequestBody Ingredient ingredient) {
+		Ingredient newIngredient = ingredientService.createIngredient(ingredient);
+		return ResponseEntity.ok(newIngredient);
+	}
+
+	@DeleteMapping("/{id}")
+	public ResponseEntity<Void> deleteIngredient(@PathVariable Long id) {
+		ingredientService.deleteIngredient(id);
+		return ResponseEntity.noContent().build();
+	}
+
 	@PutMapping("/{id}")
 	public ResponseEntity<Ingredient> updateIngredient(@PathVariable Long id, @RequestBody Ingredient ingredient) {
-		return ingredientRepository.findById(id)
-				.map(existingIngredient -> {
-					existingIngredient.setName(ingredient.getName());
-					existingIngredient.setUnit(ingredient.getUnit());
-					Ingredient updatedIngredient = ingredientRepository.save(existingIngredient);
-					return ResponseEntity.ok(updatedIngredient);
-				})
-				.orElse(ResponseEntity.notFound().build());
+		Ingredient updatedIngredient = ingredientService.updateIngredient(id, ingredient);
+		if (updatedIngredient != null) {
+			return ResponseEntity.ok(updatedIngredient);
+		} else {
+			return ResponseEntity.notFound().build();
+		}
 	}
 }
