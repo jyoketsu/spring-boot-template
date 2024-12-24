@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
+import com.example.demo.model.Dictionary;
 import com.example.demo.model.Ingredient;
 import com.example.demo.repository.IngredientRepository;
 
@@ -41,16 +42,23 @@ public class IngredientServiceImpl implements IngredientService {
 	}
 
 	@Override
-	public Ingredient createIngredient(Ingredient ingredient) {
+	public Ingredient createIngredient(String name, Long unitId) {
+		Ingredient ingredient = new Ingredient();
+		ingredient.setName(name);
+		Dictionary unit = new Dictionary();
+		unit.setId(unitId);
+		ingredient.setUnit(unit);
 		return ingredientRepository.save(ingredient);
 	}
 
 	@Override
-	public Ingredient updateIngredient(Long id, Ingredient ingredient) {
+	public Ingredient updateIngredient(Long id, String name, Long unitId) {
+		Dictionary unit = new Dictionary();
+		unit.setId(unitId);
 		return ingredientRepository.findById(id)
 				.map(existingIngredient -> {
-					existingIngredient.setName(ingredient.getName());
-					existingIngredient.setUnit(ingredient.getUnit());
+					existingIngredient.setName(name);
+					existingIngredient.setUnit(unit);
 					Ingredient updatedIngredient = ingredientRepository.save(existingIngredient);
 					return updatedIngredient;
 				})

@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.PutMapping;
 
 @RestController
@@ -43,15 +42,15 @@ public class IngredientController {
 		}
 	}
 
-	@GetMapping("/search")
-	public ResponseEntity<List<Ingredient>> getIngredientByName(@RequestParam String name) {
+	@GetMapping("/search/{name}")
+	public ResponseEntity<List<Ingredient>> getIngredientByName(@PathVariable String name) {
 		List<Ingredient> ingredients = ingredientService.getIngredientByName(name);
 		return ResponseEntity.ok(ingredients);
 	}
 
 	@PostMapping
-	public ResponseEntity<Ingredient> addIngredient(@RequestBody Ingredient ingredient) {
-		Ingredient newIngredient = ingredientService.createIngredient(ingredient);
+	public ResponseEntity<Ingredient> addIngredient(@RequestParam String name, @RequestParam Long unitId) {
+		Ingredient newIngredient = ingredientService.createIngredient(name, unitId);
 		return ResponseEntity.ok(newIngredient);
 	}
 
@@ -62,8 +61,11 @@ public class IngredientController {
 	}
 
 	@PutMapping("/{id}")
-	public ResponseEntity<Ingredient> updateIngredient(@PathVariable Long id, @RequestBody Ingredient ingredient) {
-		Ingredient updatedIngredient = ingredientService.updateIngredient(id, ingredient);
+	public ResponseEntity<Ingredient> updateIngredient(
+			@PathVariable Long id,
+			@RequestParam String name,
+			@RequestParam Long unitId) {
+		Ingredient updatedIngredient = ingredientService.updateIngredient(id, name, unitId);
 		if (updatedIngredient != null) {
 			return ResponseEntity.ok(updatedIngredient);
 		} else {

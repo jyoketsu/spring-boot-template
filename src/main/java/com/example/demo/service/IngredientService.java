@@ -11,9 +11,9 @@ public interface IngredientService {
 
 	List<Ingredient> getIngredientByName(String name);
 
-	Ingredient createIngredient(Ingredient ingredient);
+	Ingredient createIngredient(String name, Long unitId);
 
-	Ingredient updateIngredient(Long id, Ingredient ingredient);
+	Ingredient updateIngredient(Long id, String name, Long unitId);
 
 	void deleteIngredient(Long id);
 
