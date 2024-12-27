@@ -36,6 +36,15 @@ public class RecipeServiceImpl implements RecipeService {
 		dto.setDescription(recipe.getDescription());
 		dto.setContent(recipe.getContent());
 
+		/**
+		 * 从 recipe 中获取 List<RecipeIngredient>。
+		 * 
+		 * .stream() 将 List<RecipeIngredient> 转换为 Stream<RecipeIngredient>。
+		 * 
+		 * 使用 map 方法，将每个 RecipeIngredient 转换为对应的 RecipeIngredientDTO。
+		 * 
+		 * 将流中的元素收集为一个 List：使用 collect 将流结果重新组装为一个列表。
+		 */
 		dto.setIngredients(recipe.getRecipeIngredients().stream()
 				.map(this::convertIngredientToDTO)
 				.collect(Collectors.toList()));
@@ -47,6 +56,7 @@ public class RecipeServiceImpl implements RecipeService {
 		dto.setId(ingredient.getIngredient().getId());
 		dto.setIngredientName(ingredient.getIngredient().getName());
 		dto.setQuantity(ingredient.getQuantity());
+		dto.setUnit(ingredient.getIngredient().getUnit().getName());
 		return dto;
 	}
 

@@ -1,6 +1,7 @@
 package com.example.demo.controller;
 
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.demo.model.Dictionary;
@@ -31,8 +32,8 @@ public class DictionaryController {
 		return ResponseEntity.ok(dictionaries);
 	}
 
-	@GetMapping("/type/{type}")
-	public ResponseEntity<List<Dictionary>> getDictionaryByType(@PathVariable String type) {
+	@GetMapping("/type")
+	public ResponseEntity<List<Dictionary>> getDictionaryByType(@RequestParam String type) {
 		List<Dictionary> dictionaries = dictionaryService.findByDictType(type);
 		return ResponseEntity.ok(dictionaries);
 	}

@@ -4,6 +4,7 @@ public class IngredientDTO {
 	private Long id;
 	private String ingredientName;
 	private Double quantity;
+	private String unit;
 
 	public Long getId() {
 		return id;
@@ -27,6 +28,14 @@ public class IngredientDTO {
 
 	public void setQuantity(Double quantity) {
 		this.quantity = quantity;
+	}
+
+	public String getUnit() {
+		return unit;
+	}
+
+	public void setUnit(String unit) {
+		this.unit = unit;
 	}
 }
 

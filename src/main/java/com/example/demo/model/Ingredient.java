@@ -2,6 +2,7 @@ package com.example.demo.model;
 
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
@@ -22,6 +23,7 @@ public class Ingredient extends NamedEntity {
 
 	// 注释说明参考Recipe.java
 	@OneToMany(mappedBy = "ingredient", cascade = CascadeType.ALL, orphanRemoval = true)
+	@JsonIgnore // 避免无限递归
 	private List<RecipeIngredient> recipeIngredients;
 
 	public Dictionary getUnit() {
