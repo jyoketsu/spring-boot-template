@@ -2,6 +2,8 @@ package com.example.demo.repository;
 
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
@@ -21,10 +23,6 @@ public interface RecipeRepository extends JpaRepository<Recipe, Long> {
 	// 它的后缀 By 通常用于添加筛选条件，但如果没有条件，findAllBy 会被解释为获取所有记录。
 	// findAllBy 和 findAll 的区别：功能相同，但 findAllBy 更语义化，表明可以扩展为按条件查询。
 	// 用于投影时，两者均可用。
-	// findAllWidthSummaryUseProjection
-	// @Query("SELECT new
-	// com.example.demo.projection.RecipeProjection(r.name,r.updateTime) FROM Recipe
-	// r")
 	List<RecipeProjection> findAllBy();
 
 	// AS 用于将查询的结果字段名与投影接口的 getter 方法对应起来。
@@ -33,4 +31,7 @@ public interface RecipeRepository extends JpaRepository<Recipe, Long> {
 	// 隐藏表的别名： SELECT name, update_time as updateTime FROM recipes
 	@Query(value = "SELECT name, update_time as updateTime FROM recipes", nativeQuery = true)
 	List<RecipeProjection> findAllWidthSummaryUseNativeSQL();
+
+	@Query("SELECT r.name AS name, r.updateTime AS updateTime FROM Recipe r")
+	Page<RecipeProjection> findSummaryPaged(Pageable pageable);
 }

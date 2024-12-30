@@ -5,6 +5,9 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.example.demo.DTO.ingredient.IngredientDTO;
@@ -83,6 +86,12 @@ public class RecipeServiceImpl implements RecipeService {
 	@Override
 	public List<RecipeProjection> getAllWidthSummaryUseNativeSQL() {
 		return recipeRepository.findAllWidthSummaryUseNativeSQL();
+	}
+
+	@Override
+	public Page<RecipeProjection> getSummaryPaged(int page,int size) {
+		Pageable pageable = PageRequest.of(page, size);
+		return recipeRepository.findSummaryPaged(pageable);
 	}
 
 	@Override

@@ -3,8 +3,10 @@ package com.example.demo.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.demo.DTO.recipe.AddIngredientDTO;
@@ -51,6 +53,14 @@ public class RecipeController {
 	@GetMapping("/list/native")
 	public ResponseEntity<List<RecipeProjection>> getAllWithSummaryUseNativeSQL() {
 		List<RecipeProjection> recipes = recipeService.getAllWidthSummaryUseNativeSQL();
+		return ResponseEntity.ok(recipes);
+	}
+
+	@GetMapping("/list/page")
+	public ResponseEntity<Page<RecipeProjection>> getSummaryPaged(
+			@RequestParam(defaultValue = "0") int page,
+			@RequestParam(defaultValue = "0") int size) {
+		Page<RecipeProjection> recipes = recipeService.getSummaryPaged(page, size);
 		return ResponseEntity.ok(recipes);
 	}
 

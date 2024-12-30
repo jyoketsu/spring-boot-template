@@ -3,6 +3,8 @@ package com.example.demo.service;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.data.domain.Page;
+
 import com.example.demo.DTO.recipe.RecipeResDTO;
 import com.example.demo.DTO.recipe.RecipeSummaryDTO;
 import com.example.demo.model.Recipe;
@@ -17,6 +19,8 @@ public interface RecipeService {
 	List<RecipeProjection> getAllWidthSummaryUseProjection();
 
 	List<RecipeProjection> getAllWidthSummaryUseNativeSQL();
+
+	Page<RecipeProjection> getSummaryPaged(int page, int size);
 
 	RecipeResDTO getRecipeById(Long id);
 
