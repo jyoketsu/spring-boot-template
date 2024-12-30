@@ -9,10 +9,12 @@ import org.springframework.stereotype.Service;
 
 import com.example.demo.DTO.ingredient.IngredientDTO;
 import com.example.demo.DTO.recipe.RecipeResDTO;
+import com.example.demo.DTO.recipe.RecipeSummaryDTO;
 import com.example.demo.model.Ingredient;
 import com.example.demo.model.Recipe;
 import com.example.demo.model.RecipeIngredient;
 import com.example.demo.model.RecipeIngredientId;
+import com.example.demo.projection.RecipeProjection;
 import com.example.demo.repository.IngredientRepository;
 import com.example.demo.repository.RecipeIngredientRepository;
 import com.example.demo.repository.RecipeRepository;
@@ -66,6 +68,21 @@ public class RecipeServiceImpl implements RecipeService {
 		return recipes.stream()
 				.map(this::convertToDTO)
 				.collect(Collectors.toList());
+	}
+
+	@Override
+	public List<RecipeSummaryDTO> getAllWithSummaryUseJPQL() {
+		return recipeRepository.findAllWithSummaryUseJPQL();
+	}
+
+	// @Override
+	public List<RecipeProjection> getAllWidthSummaryUseProjection() {
+		return recipeRepository.findAllBy();
+	}
+
+	@Override
+	public List<RecipeProjection> getAllWidthSummaryUseNativeSQL() {
+		return recipeRepository.findAllWidthSummaryUseNativeSQL();
 	}
 
 	@Override

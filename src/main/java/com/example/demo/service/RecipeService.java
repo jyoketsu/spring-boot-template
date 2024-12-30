@@ -4,11 +4,19 @@ import java.util.List;
 import java.util.Map;
 
 import com.example.demo.DTO.recipe.RecipeResDTO;
+import com.example.demo.DTO.recipe.RecipeSummaryDTO;
 import com.example.demo.model.Recipe;
 import com.example.demo.model.RecipeIngredient;
+import com.example.demo.projection.RecipeProjection;
 
 public interface RecipeService {
 	List<RecipeResDTO> getAllRecipes();
+
+	List<RecipeSummaryDTO> getAllWithSummaryUseJPQL();
+
+	List<RecipeProjection> getAllWidthSummaryUseProjection();
+
+	List<RecipeProjection> getAllWidthSummaryUseNativeSQL();
 
 	RecipeResDTO getRecipeById(Long id);
 

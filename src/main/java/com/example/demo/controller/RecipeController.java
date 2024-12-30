@@ -10,8 +10,10 @@ import org.springframework.web.bind.annotation.RestController;
 import com.example.demo.DTO.recipe.AddIngredientDTO;
 import com.example.demo.DTO.recipe.RecipeDTO;
 import com.example.demo.DTO.recipe.RecipeResDTO;
+import com.example.demo.DTO.recipe.RecipeSummaryDTO;
 import com.example.demo.model.Recipe;
 import com.example.demo.model.RecipeIngredient;
+import com.example.demo.projection.RecipeProjection;
 import com.example.demo.service.RecipeService;
 
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -31,6 +33,24 @@ public class RecipeController {
 	@GetMapping
 	public ResponseEntity<List<RecipeResDTO>> getAllRecipes() {
 		List<RecipeResDTO> recipes = recipeService.getAllRecipes();
+		return ResponseEntity.ok(recipes);
+	}
+
+	@GetMapping("/list/JPQL")
+	public ResponseEntity<List<RecipeSummaryDTO>> getAllWithSummaryUseJPQL() {
+		List<RecipeSummaryDTO> recipes = recipeService.getAllWithSummaryUseJPQL();
+		return ResponseEntity.ok(recipes);
+	}
+
+	@GetMapping("/list/projection")
+	public ResponseEntity<List<RecipeProjection>> getAllWithSummaryUseProjection() {
+		List<RecipeProjection> recipes = recipeService.getAllWidthSummaryUseProjection();
+		return ResponseEntity.ok(recipes);
+	}
+
+	@GetMapping("/list/native")
+	public ResponseEntity<List<RecipeProjection>> getAllWithSummaryUseNativeSQL() {
+		List<RecipeProjection> recipes = recipeService.getAllWidthSummaryUseNativeSQL();
 		return ResponseEntity.ok(recipes);
 	}
 
