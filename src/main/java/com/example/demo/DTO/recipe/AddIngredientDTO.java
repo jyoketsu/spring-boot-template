@@ -1,4 +1,4 @@
-package com.example.demo.DTO.recipe;
+package com.example.demo.dto.recipe;
 
 public class AddIngredientDTO {
 	private Long recipeId;

@@ -10,14 +10,14 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import com.example.demo.DTO.ingredient.IngredientDTO;
-import com.example.demo.DTO.recipe.RecipeResDTO;
-import com.example.demo.DTO.recipe.RecipeSummaryDTO;
+import com.example.demo.dto.ingredient.IngredientDTO;
+import com.example.demo.dto.recipe.RecipeProjection;
+import com.example.demo.dto.recipe.RecipeResDTO;
+import com.example.demo.dto.recipe.RecipeSummaryDTO;
 import com.example.demo.model.Ingredient;
 import com.example.demo.model.Recipe;
 import com.example.demo.model.RecipeIngredient;
 import com.example.demo.model.RecipeIngredientId;
-import com.example.demo.projection.RecipeProjection;
 import com.example.demo.repository.IngredientRepository;
 import com.example.demo.repository.RecipeIngredientRepository;
 import com.example.demo.repository.RecipeRepository;

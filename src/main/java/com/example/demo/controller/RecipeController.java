@@ -9,13 +9,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.demo.DTO.recipe.AddIngredientDTO;
-import com.example.demo.DTO.recipe.RecipeDTO;
-import com.example.demo.DTO.recipe.RecipeResDTO;
-import com.example.demo.DTO.recipe.RecipeSummaryDTO;
+import com.example.demo.dto.recipe.AddIngredientDTO;
+import com.example.demo.dto.recipe.RecipeDTO;
+import com.example.demo.dto.recipe.RecipeProjection;
+import com.example.demo.dto.recipe.RecipeResDTO;
+import com.example.demo.dto.recipe.RecipeSummaryDTO;
 import com.example.demo.model.Recipe;
 import com.example.demo.model.RecipeIngredient;
-import com.example.demo.projection.RecipeProjection;
 import com.example.demo.service.RecipeService;
 
 import org.springframework.web.bind.annotation.DeleteMapping;

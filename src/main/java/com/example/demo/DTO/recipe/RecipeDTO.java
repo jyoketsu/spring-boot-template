@@ -1,4 +1,4 @@
-package com.example.demo.DTO.recipe;
+package com.example.demo.dto.recipe;
 
 import java.util.Map;
 

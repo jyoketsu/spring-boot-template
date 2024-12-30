@@ -1,8 +1,8 @@
-package com.example.demo.DTO.recipe;
+package com.example.demo.dto.recipe;
 
 import java.util.List;
 
-import com.example.demo.DTO.ingredient.IngredientDTO;
+import com.example.demo.dto.ingredient.IngredientDTO;
 
 public class RecipeResDTO {
 	private Long id;

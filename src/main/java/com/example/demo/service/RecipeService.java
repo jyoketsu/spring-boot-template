@@ -5,11 +5,11 @@ import java.util.Map;
 
 import org.springframework.data.domain.Page;
 
-import com.example.demo.DTO.recipe.RecipeResDTO;
-import com.example.demo.DTO.recipe.RecipeSummaryDTO;
+import com.example.demo.dto.recipe.RecipeProjection;
+import com.example.demo.dto.recipe.RecipeResDTO;
+import com.example.demo.dto.recipe.RecipeSummaryDTO;
 import com.example.demo.model.Recipe;
 import com.example.demo.model.RecipeIngredient;
-import com.example.demo.projection.RecipeProjection;
 
 public interface RecipeService {
 	List<RecipeResDTO> getAllRecipes();

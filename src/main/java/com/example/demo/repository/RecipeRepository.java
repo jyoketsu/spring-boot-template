@@ -7,12 +7,12 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
-import com.example.demo.DTO.recipe.RecipeSummaryDTO;
+import com.example.demo.dto.recipe.RecipeProjection;
+import com.example.demo.dto.recipe.RecipeSummaryDTO;
 import com.example.demo.model.Recipe;
-import com.example.demo.projection.RecipeProjection;
 
 public interface RecipeRepository extends JpaRepository<Recipe, Long> {
-	@Query("SELECT new com.example.demo.DTO.recipe.RecipeSummaryDTO(r.name, r.updateTime) FROM Recipe r")
+	@Query("SELECT new com.example.demo.dto.recipe.RecipeSummaryDTO(r.name, r.updateTime) FROM Recipe r")
 	List<RecipeSummaryDTO> findAllWithSummaryUseJPQL();
 
 	// 当方法返回类型是一个投影接口（如 RecipeProjection），JPA 会根据方法名解析出对应的 JPQL 查询。

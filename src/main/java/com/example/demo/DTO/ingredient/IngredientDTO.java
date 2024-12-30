@@ -1,4 +1,4 @@
-package com.example.demo.DTO.ingredient;
+package com.example.demo.dto.ingredient;
 
 public class IngredientDTO {
 	private Long id;
