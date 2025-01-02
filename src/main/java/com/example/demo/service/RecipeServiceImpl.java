@@ -14,6 +14,7 @@ import com.example.demo.dto.ingredient.IngredientDTO;
 import com.example.demo.dto.recipe.RecipeProjection;
 import com.example.demo.dto.recipe.RecipeResDTO;
 import com.example.demo.dto.recipe.RecipeSummaryDTO;
+import com.example.demo.exception.ResourceNotFoundException;
 import com.example.demo.model.Ingredient;
 import com.example.demo.model.Recipe;
 import com.example.demo.model.RecipeIngredient;
@@ -89,14 +90,15 @@ public class RecipeServiceImpl implements RecipeService {
 	}
 
 	@Override
-	public Page<RecipeProjection> getSummaryPaged(int page,int size) {
+	public Page<RecipeProjection> getSummaryPaged(int page, int size) {
 		Pageable pageable = PageRequest.of(page, size);
 		return recipeRepository.findSummaryPaged(pageable);
 	}
 
 	@Override
 	public RecipeResDTO getRecipeById(Long id) {
-		Recipe recipe = recipeRepository.findById(id).orElse(null);
+		Recipe recipe = recipeRepository.findById(id)
+				.orElseThrow(() -> new ResourceNotFoundException("recipe not found with id " + id));
 		return convertToDTO(recipe);
 	}
 
@@ -112,7 +114,7 @@ public class RecipeServiceImpl implements RecipeService {
 			existingRecipe.setDescription(recipe.getDescription());
 			existingRecipe.setContent(recipe.getContent());
 			return recipeRepository.save(existingRecipe);
-		}).orElse(null);
+		}).orElseThrow(() -> new ResourceNotFoundException("recipe not found with id " + id));
 	}
 
 	@Override
@@ -123,8 +125,13 @@ public class RecipeServiceImpl implements RecipeService {
 	@Override
 	public RecipeIngredient addIngredient2Recipe(Long recipeId, Long ingredientId, Double quantity) {
 		RecipeIngredient recipeIngredient = new RecipeIngredient();
-		Recipe recipe = recipeRepository.findById(recipeId).orElse(null);
-		Ingredient ingredient = ingredientRepository.findById(ingredientId).orElse(null);
+
+		Recipe recipe = recipeRepository.findById(recipeId)
+				.orElseThrow(() -> new ResourceNotFoundException("recipe not found with id " + recipeId));
+
+		Ingredient ingredient = ingredientRepository.findById(ingredientId)
+				.orElseThrow(() -> new ResourceNotFoundException("ingredient not found with id " + ingredientId));
+
 		recipeIngredient.setRecipe(recipe);
 		recipeIngredient.setIngredient(ingredient);
 		recipeIngredient.setQuantity(quantity);
@@ -149,7 +156,7 @@ public class RecipeServiceImpl implements RecipeService {
 
 			// 获取 Ingredient
 			Ingredient ingredient = ingredientRepository.findById(ingredientId)
-					.orElseThrow(() -> new IllegalArgumentException("Invalid ingredient ID: " + ingredientId));
+					.orElseThrow(() -> new ResourceNotFoundException("ingredient not found with id " + ingredientId));
 
 			// 创建 RecipeIngredient
 			RecipeIngredient recipeIngredient = new RecipeIngredient();

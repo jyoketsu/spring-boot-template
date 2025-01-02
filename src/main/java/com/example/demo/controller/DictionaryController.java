@@ -9,7 +9,6 @@ import com.example.demo.service.DictionaryService;
 
 import java.util.List;
 
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -27,36 +26,27 @@ public class DictionaryController {
 	}
 
 	@GetMapping
-	public ResponseEntity<List<Dictionary>> getAllDictionaries() {
-		List<Dictionary> dictionaries = dictionaryService.getAllDictionaries();
-		return ResponseEntity.ok(dictionaries);
+	public List<Dictionary> getAllDictionaries() {
+		return dictionaryService.getAllDictionaries();
 	}
 
 	@GetMapping("/type")
-	public ResponseEntity<List<Dictionary>> getDictionaryByType(@RequestParam String type) {
-		List<Dictionary> dictionaries = dictionaryService.findByDictType(type);
-		return ResponseEntity.ok(dictionaries);
+	public List<Dictionary> getDictionaryByType(@RequestParam String type) {
+		return dictionaryService.findByDictType(type);
 	}
 
 	@PostMapping
-	public ResponseEntity<Dictionary> addDictionary(@RequestBody Dictionary dictionary) {
-		Dictionary newDictionary = dictionaryService.createDictionary(dictionary);
-		return ResponseEntity.ok(newDictionary);
+	public Dictionary addDictionary(@RequestBody Dictionary dictionary) {
+		return dictionaryService.createDictionary(dictionary);
 	}
 
 	@PutMapping("/{id}")
-	public ResponseEntity<Dictionary> updateDictionary(@PathVariable Long id, @RequestBody Dictionary dictionary) {
-		Dictionary updatedDictionary = dictionaryService.updateDictionary(id, dictionary);
-		if (updatedDictionary != null) {
-			return ResponseEntity.ok(updatedDictionary);
-		} else {
-			return ResponseEntity.notFound().build();
-		}
+	public Dictionary updateDictionary(@PathVariable Long id, @RequestBody Dictionary dictionary) {
+		return dictionaryService.updateDictionary(id, dictionary);
 	}
 
 	@DeleteMapping("/{id}")
-	public ResponseEntity<Void> deleteDictionary(@PathVariable Long id) {
+	public void deleteDictionary(@PathVariable Long id) {
 		dictionaryService.deleteDictionary(id);
-		return ResponseEntity.noContent().build();
 	}
 }

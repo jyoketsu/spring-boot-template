@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
+import com.example.demo.exception.ResourceNotFoundException;
 import com.example.demo.model.Dictionary;
 import com.example.demo.repository.DictionaryRepository;
 
@@ -40,7 +41,7 @@ public class DictionaryServiceImpl implements DictionaryService {
 					Dictionary updatedDictionary = dictionaryRepository.save(existingDictionary);
 					return updatedDictionary;
 				})
-				.orElse(null);
+				.orElseThrow(() -> new ResourceNotFoundException("dictionary not found with id " + id));
 	}
 
 	@Override

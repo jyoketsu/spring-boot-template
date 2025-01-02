@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
+import com.example.demo.exception.ResourceNotFoundException;
 import com.example.demo.model.Dictionary;
 import com.example.demo.model.Ingredient;
 import com.example.demo.repository.IngredientRepository;
@@ -62,7 +63,7 @@ public class IngredientServiceImpl implements IngredientService {
 					Ingredient updatedIngredient = ingredientRepository.save(existingIngredient);
 					return updatedIngredient;
 				})
-				.orElse(null);
+				.orElseThrow(() -> new ResourceNotFoundException("ingredient not found with id " + id));
 	}
 
 	@Override

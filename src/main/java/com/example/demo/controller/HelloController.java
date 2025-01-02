@@ -2,10 +2,12 @@ package com.example.demo.controller;
 
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.demo.dto.ApiResponse;
 import com.example.demo.model.Hello;
 
 import java.util.concurrent.atomic.AtomicLong;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -16,7 +18,7 @@ public class HelloController {
 	private final AtomicLong counter = new AtomicLong();
 
 	@GetMapping("/hello")
-	public Hello hello(@RequestParam(value = "name", defaultValue = "World") String name) {
-		return new Hello(counter.incrementAndGet(), String.format(template, name));
+	public ResponseEntity<ApiResponse<Hello>> hello(@RequestParam(value = "name", defaultValue = "World") String name) {
+		return ResponseEntity.ok(ApiResponse.success(new Hello(counter.incrementAndGet(), String.format(template, name))));
 	}
 }

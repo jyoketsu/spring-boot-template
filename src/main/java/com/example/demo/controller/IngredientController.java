@@ -6,7 +6,6 @@ import com.example.demo.model.Ingredient;
 import com.example.demo.service.IngredientService;
 
 import java.util.List;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -27,49 +26,35 @@ public class IngredientController {
 	}
 
 	@GetMapping
-	public ResponseEntity<List<Ingredient>> getAllIngredients() {
-		List<Ingredient> ingredients = ingredientService.getAllIngredients();
-		return ResponseEntity.ok(ingredients);
+	public List<Ingredient> getAllIngredients() {
+		return ingredientService.getAllIngredients();
 	}
 
 	@GetMapping("/{id}")
-	public ResponseEntity<Ingredient> getIngredientById(@PathVariable Long id) {
-		Ingredient ingredient = ingredientService.getIngredientById(id);
-		if (ingredient != null) {
-			return ResponseEntity.ok(ingredient);
-		} else {
-			return ResponseEntity.notFound().build();
-		}
+	public Ingredient getIngredientById(@PathVariable Long id) {
+		return ingredientService.getIngredientById(id);
 	}
 
 	@GetMapping("/search/{name}")
-	public ResponseEntity<List<Ingredient>> getIngredientByName(@PathVariable String name) {
-		List<Ingredient> ingredients = ingredientService.getIngredientByName(name);
-		return ResponseEntity.ok(ingredients);
+	public List<Ingredient> getIngredientByName(@PathVariable String name) {
+		return ingredientService.getIngredientByName(name);
 	}
 
 	@PostMapping
-	public ResponseEntity<Ingredient> addIngredient(@RequestParam String name, @RequestParam Long unitId) {
-		Ingredient newIngredient = ingredientService.createIngredient(name, unitId);
-		return ResponseEntity.ok(newIngredient);
+	public Ingredient addIngredient(@RequestParam String name, @RequestParam Long unitId) {
+		return ingredientService.createIngredient(name, unitId);
 	}
 
 	@DeleteMapping("/{id}")
-	public ResponseEntity<Void> deleteIngredient(@PathVariable Long id) {
+	public void deleteIngredient(@PathVariable Long id) {
 		ingredientService.deleteIngredient(id);
-		return ResponseEntity.noContent().build();
 	}
 
 	@PutMapping("/{id}")
-	public ResponseEntity<Ingredient> updateIngredient(
+	public Ingredient updateIngredient(
 			@PathVariable Long id,
 			@RequestParam String name,
 			@RequestParam Long unitId) {
-		Ingredient updatedIngredient = ingredientService.updateIngredient(id, name, unitId);
-		if (updatedIngredient != null) {
-			return ResponseEntity.ok(updatedIngredient);
-		} else {
-			return ResponseEntity.notFound().build();
-		}
+		return ingredientService.updateIngredient(id, name, unitId);
 	}
 }
