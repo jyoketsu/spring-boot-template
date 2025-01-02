@@ -26,7 +26,8 @@ public class IngredientServiceImpl implements IngredientService {
 
 	@Override
 	public Ingredient getIngredientById(Long id) {
-		return ingredientRepository.findById(id).orElse(null);
+		return ingredientRepository.findById(id)
+				.orElseThrow(() -> new ResourceNotFoundException("ingredient not found with id " + id));
 
 		// 传统写法（不使用 Optional）
 		// Optional<Ingredient> optionalIngredient = ingredientRepository.findById(id);
