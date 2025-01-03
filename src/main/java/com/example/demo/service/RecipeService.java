@@ -12,7 +12,7 @@ import com.example.demo.model.Recipe;
 import com.example.demo.model.RecipeIngredient;
 
 public interface RecipeService {
-	List<RecipeResDTO> getAllRecipes();
+	List<RecipeResDTO> getAllRecipes(String name, String description, List<String> ingredientNames);
 
 	List<RecipeSummaryDTO> getAllWithSummaryUseJPQL();
 

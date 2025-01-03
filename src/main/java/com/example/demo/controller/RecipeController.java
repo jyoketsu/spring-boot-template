@@ -31,9 +31,12 @@ public class RecipeController {
 	@Autowired
 	private RecipeService recipeService;
 
-	@GetMapping
-	public List<RecipeResDTO> getAllRecipes() {
-		return recipeService.getAllRecipes();
+	@GetMapping("/list/search")
+	public List<RecipeResDTO> getAllRecipes(
+			@RequestParam(required = false) String name,
+			@RequestParam(required = false) String description,
+			@RequestParam(required = false) List<String> ingredientNames) {
+		return recipeService.getAllRecipes(name, description, ingredientNames);
 	}
 
 	@GetMapping("/list/JPQL")

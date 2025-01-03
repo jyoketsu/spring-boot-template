@@ -5,13 +5,14 @@ import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 
 import com.example.demo.dto.recipe.RecipeProjection;
 import com.example.demo.dto.recipe.RecipeSummaryDTO;
 import com.example.demo.model.Recipe;
 
-public interface RecipeRepository extends JpaRepository<Recipe, Long> {
+public interface RecipeRepository extends JpaRepository<Recipe, Long>, JpaSpecificationExecutor<Recipe> {
 	@Query("SELECT new com.example.demo.dto.recipe.RecipeSummaryDTO(r.name, r.updateTime) FROM Recipe r")
 	List<RecipeSummaryDTO> findAllWithSummaryUseJPQL();
 

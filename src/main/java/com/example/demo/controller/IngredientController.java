@@ -25,9 +25,11 @@ public class IngredientController {
 		this.ingredientService = ingredientService;
 	}
 
-	@GetMapping
-	public List<Ingredient> getAllIngredients() {
-		return ingredientService.getAllIngredients();
+	@GetMapping("/search")
+	public List<Ingredient> getAllIngredients(
+			@RequestParam(required = false) String name,
+			@RequestParam(required = false) Long unitId) {
+		return ingredientService.getAllIngredients(name, unitId);
 	}
 
 	@GetMapping("/{id}")
@@ -35,8 +37,8 @@ public class IngredientController {
 		return ingredientService.getIngredientById(id);
 	}
 
-	@GetMapping("/search/{name}")
-	public List<Ingredient> getIngredientByName(@PathVariable String name) {
+	@GetMapping("/name")
+	public List<Ingredient> getIngredientByName(@RequestParam String name) {
 		return ingredientService.getIngredientByName(name);
 	}
 

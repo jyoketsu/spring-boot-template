@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import com.example.demo.dto.ingredient.IngredientDTO;
@@ -22,6 +23,7 @@ import com.example.demo.model.RecipeIngredientId;
 import com.example.demo.repository.IngredientRepository;
 import com.example.demo.repository.RecipeIngredientRepository;
 import com.example.demo.repository.RecipeRepository;
+import com.example.demo.repository.RecipeSpecification;
 
 @Service
 public class RecipeServiceImpl implements RecipeService {
@@ -67,8 +69,17 @@ public class RecipeServiceImpl implements RecipeService {
 	}
 
 	@Override
-	public List<RecipeResDTO> getAllRecipes() {
-		List<Recipe> recipes = recipeRepository.findAll();
+	public List<RecipeResDTO> getAllRecipes(String name, String description, List<String> ingredientNames) {
+		// 通过 Specification 构造查询条件
+		Specification<Recipe> spec = Specification
+				.where(RecipeSpecification.hasName(name))
+				.and(RecipeSpecification.hasDescription(description))
+				.and(RecipeSpecification.hasIngredients(ingredientNames));
+
+		// 执行查询
+		List<Recipe> recipes = recipeRepository.findAll(spec);
+
+		// 将查询结果转换为 DTO
 		return recipes.stream()
 				.map(this::convertToDTO)
 				.collect(Collectors.toList());

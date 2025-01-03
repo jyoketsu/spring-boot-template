@@ -5,7 +5,7 @@ import java.util.List;
 import com.example.demo.model.Ingredient;
 
 public interface IngredientService {
-	List<Ingredient> getAllIngredients();
+	List<Ingredient> getAllIngredients(String name, Long unitId);
 
 	Ingredient getIngredientById(Long id);
 

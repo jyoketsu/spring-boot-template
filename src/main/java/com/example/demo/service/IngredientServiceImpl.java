@@ -2,12 +2,14 @@ package com.example.demo.service;
 
 import java.util.List;
 
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import com.example.demo.exception.ResourceNotFoundException;
 import com.example.demo.model.Dictionary;
 import com.example.demo.model.Ingredient;
 import com.example.demo.repository.IngredientRepository;
+import com.example.demo.repository.IngredientSpecification;
 
 // @Service 是 Spring 框架中的一个注解，用于将类标识为服务层的组件，并将其注册为 Spring 容器中的一个 Bean。
 @Service
@@ -20,8 +22,10 @@ public class IngredientServiceImpl implements IngredientService {
 	}
 
 	@Override
-	public List<Ingredient> getAllIngredients() {
-		return ingredientRepository.findAll();
+	public List<Ingredient> getAllIngredients(String name, Long unitId) {
+		Specification<Ingredient> specification = Specification.where(IngredientSpecification.hasName(name))
+				.and(IngredientSpecification.hasUnitId(unitId));
+		return ingredientRepository.findAll(specification);
 	}
 
 	@Override
