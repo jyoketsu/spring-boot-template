@@ -16,9 +16,11 @@
 ```
 
 ## RESTful Web Service
+
 [HelloController.java](src/main/java/com/example/demo/controller/HelloController.java)
 
 ## JPA
+
 [IngredientRepository.java](src/main/java/com/example/demo/repository/IngredientRepository.java)
 
 ## MySQL
@@ -99,3 +101,11 @@ GET /ingredients/search?name=鸡蛋&unit=1
 ```
 GET /recipes/list/search?name=面条&description=辣&ingredients=肉丝,青椒
 ```
+
+## Redis 缓存
+
+- [pom.xml](./pom.xml)中添加`spring-boot-starter-data-redis`和`spring-boot-starter-cache`
+- [application-redis.properties](src/main/resources/application-redis.properties)
+- 在主类或配置类上添加 `@EnableCaching` 注解 : [RedisConfig.java](src/main/java/com/example/demo/config/RedisConfig.java)
+- `@Cacheable` `@CachePut` `@CacheEvict` : [DictionaryService.java](src/main/java/com/example/demo/service/DictionaryServiceImpl.java)
+- 默认情况下，Redis 使用二进制序列化，但你可以配置 JSON 序列化以提高可读性 : [RedisConfig.java](src/main/java/com/example/demo/config/RedisConfig.java) : 添加`RedisTemplate`和`CacheManager`的配置，并且使用相同的序列化方式

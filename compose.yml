@@ -15,5 +15,10 @@ services:
       - mysql_data:/var/lib/mysql # 使用命名卷挂载 MySQL 数据目录
     restart: unless-stopped
 
+  redis:
+    image: 'redis:latest'
+    ports:
+      - '6379:6379'
+
 volumes:
   mysql_data: {} # 声明命名卷

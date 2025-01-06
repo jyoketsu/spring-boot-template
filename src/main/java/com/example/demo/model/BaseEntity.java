@@ -4,11 +4,15 @@ import jakarta.persistence.Column;
 import jakarta.persistence.EntityListeners;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
+
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
 
 import jakarta.persistence.Id;
 import jakarta.persistence.MappedSuperclass;
@@ -20,7 +24,7 @@ import jakarta.persistence.MappedSuperclass;
 @MappedSuperclass
 // @EntityListeners 注解用于指定一个或多个实体监听器类，这些类中的回调方法将在实体上发生的生命周期事件发生时被调用。
 @EntityListeners(AuditingEntityListener.class)
-public class BaseEntity {
+public class BaseEntity implements Serializable {
 	@Id
 	// 数据库的自增主键
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -28,10 +32,12 @@ public class BaseEntity {
 
 	@CreatedDate
 	@Column(name = "create_time", nullable = true, updatable = false)
+	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
 	private LocalDateTime createTime;
 
 	@LastModifiedDate
 	@Column(name = "update_time", nullable = true)
+	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
 	private LocalDateTime updateTime;
 
 	// 必须有一个无参构造函数（可以是显式声明的或隐式的）。这是因为 JPA 在实例化实体类时，需要通过反射来创建对象，而反射需要调用无参构造函数。
