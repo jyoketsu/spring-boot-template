@@ -113,3 +113,11 @@ GET /recipes/list/search?name=面条&description=辣&ingredients=肉丝,青椒
 - 在主类或配置类上添加 `@EnableCaching` 注解 : [RedisConfig.java](src/main/java/com/example/demo/config/RedisConfig.java)
 - `@Cacheable` `@CachePut` `@CacheEvict` : [DictionaryService.java](src/main/java/com/example/demo/service/DictionaryServiceImpl.java)
 - 默认情况下，Redis 使用二进制序列化，但你可以配置 JSON 序列化以提高可读性 : [RedisConfig.java](src/main/java/com/example/demo/config/RedisConfig.java) : 添加`RedisTemplate`和`CacheManager`的配置，并且使用相同的序列化方式
+
+## Docker
+
+- [application-mysql.properties](src/main/resources/application-mysql.properties) `${DB_HOST:localhost}`
+- [application-redis.properties](src/main/resources/application-redis.properties) `${DB_HOST:localhost}`
+- [Dockerfile](./Dockerfile)
+- [docker-compose.yml](./docker-compose.yml)
+- [build.sh](./build.sh)
