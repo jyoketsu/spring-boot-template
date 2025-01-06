@@ -58,6 +58,10 @@
 
 [RecipeRepository.java](src/main/java/com/example/demo/repository/RecipeRepository.java)
 
+## @JsonFormat
+
+[BaseEntity](src/main/java/com/example/demo/model/BaseEntity.java) [RecipeProjection](src/main/java/com/example/demo/dto/recipe/RecipeProjection.java) [RecipeSummaryDTO](src/main/java/com/example/demo/dto/recipe/RecipeSummaryDTO.java)
+
 ## 分页查询
 
 - 在 Spring Data JPA 的 JpaRepository 中使用 Page 对象实现分页查询，例如 [RecipeRepository.java](src/main/java/com/example/demo/repository/RecipeRepository.java)

@@ -1,6 +1,7 @@
 package com.example.demo.config;
 
 import org.springframework.core.MethodParameter;
+import org.springframework.core.annotation.Order;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.server.ServerHttpRequest;
@@ -13,6 +14,7 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice;
 import com.example.demo.dto.ApiResponse;
 
 @ControllerAdvice
+@Order(2)  // 优先级较高，后执行
 public class ApiResponseAdvice implements ResponseBodyAdvice<Object> {
 
 	@SuppressWarnings("rawtypes")
