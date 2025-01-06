@@ -2,8 +2,11 @@ package com.example.demo.dto.recipe;
 
 import java.time.LocalDateTime;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 public class RecipeSummaryDTO {
 	private String name;
+	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
 	private LocalDateTime updateTime;
 
 	public RecipeSummaryDTO(String name, LocalDateTime updateTime) {
