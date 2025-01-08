@@ -2,9 +2,13 @@ package com.example.demo.dto;
 
 import org.springframework.data.domain.Page;
 
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
+
+import java.io.Serializable;
 import java.util.List;
 
-public class PageResponse<T> {
+@JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, include = JsonTypeInfo.As.PROPERTY, property = "@class")
+public class PageResponse<T> implements Serializable {
 	private List<T> content;
 	private int page;
 	private int size;

@@ -5,11 +5,15 @@ import java.util.List;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
+import com.example.demo.dto.PageResponse;
 import com.example.demo.exception.ResourceNotFoundException;
 import com.example.demo.model.Dictionary;
 import com.example.demo.repository.DictionaryRepository;
+import com.example.demo.repository.DictionarySpecification;
 
 @Service
 public class DictionaryServiceImpl implements DictionaryService {
@@ -28,10 +32,18 @@ public class DictionaryServiceImpl implements DictionaryService {
 	 * condition 属性用于指定缓存的条件，这个条件是一个字符串，可以使用 SpEL 表达式来指定条件，只有当条件为 true 时，才会进行缓存。
 	 * unless 属性用于指定缓存的条件，这个条件是一个字符串，可以使用 SpEL 表达式来指定条件，只有当条件为 false 时，才会进行缓存。
 	 */
-	@Cacheable(value = "dictionaries")
-	public List<Dictionary> getAllDictionaries() {
+	@Cacheable(value = "dictionaries", key = "T(String).valueOf(#page) + '-' + T(String).valueOf(#size) + '-' + (#name ?: 'null') + '-' + (#dictType ?: 'null')")
+	public PageResponse<Dictionary> getAllDictionaries(String name, String dictType, int page, int size) {
+
 		System.out.println("Fetching dictionaries from database");
-		return dictionaryRepository.findAll();
+
+		Specification<Dictionary> spec = Specification
+				.where(DictionarySpecification.hasName(name))
+				.and(DictionarySpecification.hasDictType(dictType));
+
+		PageRequest pageable = PageRequest.of(page, size);
+
+		return PageResponse.of(dictionaryRepository.findAll(spec, pageable));
 	}
 
 	@Override
@@ -39,6 +51,14 @@ public class DictionaryServiceImpl implements DictionaryService {
 	public List<Dictionary> findByDictType(String dictType) {
 		System.out.println("Fetching dictionaries by dictType from database");
 		return dictionaryRepository.findByDictType(dictType);
+	}
+
+	@Override
+	@Cacheable(value = "dictionary", key = "#id")
+	public Dictionary findById(Long id) {
+		System.out.println("Fetching dictionaries by dictType from database");
+		return dictionaryRepository.findById(id)
+				.orElseThrow(() -> new ResourceNotFoundException("dictionary not found with id " + id));
 	}
 
 	@Override

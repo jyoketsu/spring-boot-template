@@ -57,7 +57,7 @@ public class RecipeController {
 	@GetMapping("/list/page")
 	public Page<RecipeProjection> getSummaryPaged(
 			@RequestParam(defaultValue = "0") int page,
-			@RequestParam(defaultValue = "0") int size) {
+			@RequestParam(defaultValue = "10") int size) {
 		return recipeService.getSummaryPaged(page, size);
 	}
 

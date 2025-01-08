@@ -4,6 +4,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.demo.dto.PageResponse;
 import com.example.demo.model.Dictionary;
 import com.example.demo.service.DictionaryService;
 
@@ -26,13 +27,22 @@ public class DictionaryController {
 	}
 
 	@GetMapping
-	public List<Dictionary> getAllDictionaries() {
-		return dictionaryService.getAllDictionaries();
+	public PageResponse<Dictionary> getAllDictionaries(
+			@RequestParam(required = false) String name,
+			@RequestParam(required = false) String dictType,
+			@RequestParam(defaultValue = "0") int page,
+			@RequestParam(defaultValue = "10") int size) {
+		return dictionaryService.getAllDictionaries(name, dictType, page, size);
 	}
 
 	@GetMapping("/type")
 	public List<Dictionary> getDictionaryByType(@RequestParam String type) {
 		return dictionaryService.findByDictType(type);
+	}
+
+	@GetMapping("/{id}")
+	public Dictionary getDictById(@PathVariable Long id) {
+		return dictionaryService.findById(id);
 	}
 
 	@PostMapping
