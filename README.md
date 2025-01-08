@@ -19,6 +19,13 @@
 
 [HelloController.java](src/main/java/com/example/demo/controller/HelloController.java)
 
+## Entity
+
+[BaseEntity](src/main/java/com/example/demo/model/BaseEntity.java)  
+[NamedEntity](src/main/java/com/example/demo/model/NamedEntity.java)  
+[Dictionary](src/main/java/com/example/demo/model/Dictionary.java)  
+[Ingredient](src/main/java/com/example/demo/model/Ingredient.java)
+
 ## JPA
 
 [IngredientRepository.java](src/main/java/com/example/demo/repository/IngredientRepository.java)

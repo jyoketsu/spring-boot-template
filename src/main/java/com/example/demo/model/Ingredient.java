@@ -9,9 +9,12 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import jakarta.persistence.UniqueConstraint;
 
 @Entity
-@Table(name = "ingredients")
+@Table(name = "ingredients", uniqueConstraints = {
+		@UniqueConstraint(columnNames = "name")
+})
 public class Ingredient extends NamedEntity {
 
 	// 多对一：多个当前实体对象(食材)可以对应一个关联的目标实体对象(单位)
