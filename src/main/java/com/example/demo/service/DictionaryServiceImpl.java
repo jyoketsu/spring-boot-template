@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
@@ -62,15 +63,19 @@ public class DictionaryServiceImpl implements DictionaryService {
 	}
 
 	@Override
-	@CachePut(value = "dictionaries", key = "#result.id")
-	@CacheEvict(value = "dictionaries", allEntries = true)
+	@Caching(evict = {
+			@CacheEvict(value = "dictionaries", allEntries = true),
+			@CacheEvict(value = "dictTypes", allEntries = true)
+	})
 	public Dictionary createDictionary(Dictionary dictionary) {
 		return dictionaryRepository.save(dictionary);
 	}
 
 	@Override
-	@CachePut(value = "dictionaries", key = "#id")
-	@CacheEvict(value = "dictionaries", allEntries = true)
+	@Caching(put = { @CachePut(value = "dictionary", key = "#id") }, evict = {
+			@CacheEvict(value = "dictionaries", allEntries = true),
+			@CacheEvict(value = "dictTypes", allEntries = true)
+	})
 	public Dictionary updateDictionary(Long id, Dictionary dictionary) {
 		return dictionaryRepository.findById(id)
 				.map(existingDictionary -> {
@@ -90,8 +95,18 @@ public class DictionaryServiceImpl implements DictionaryService {
 	 * deleteDictionary 使用了 @CacheEvict 注解，并且指定了 key 为 #id，但 getAllDictionaries 和
 	 * findByDictType 缓存的数据范围是整个 dictionaries 或特定 dictType，而不是单个 id
 	 */
-	@CacheEvict(value = "dictionaries", allEntries = true)
+	// @CacheEvict(value = "dictionaries", allEntries = true)
+	@Caching(evict = {
+			@CacheEvict(value = "dictionaries", allEntries = true),
+			@CacheEvict(value = "dictTypes", allEntries = true)
+	})
 	public void deleteDictionary(Long id) {
 		dictionaryRepository.deleteById(id);
+	}
+
+	@Override
+	@Cacheable(value = "dictTypes")
+	public List<String> getAllDictTypes() {
+		return dictionaryRepository.findDistinctDictType();
 	}
 }

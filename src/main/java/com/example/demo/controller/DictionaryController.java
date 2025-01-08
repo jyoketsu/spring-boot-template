@@ -59,4 +59,9 @@ public class DictionaryController {
 	public void deleteDictionary(@PathVariable Long id) {
 		dictionaryService.deleteDictionary(id);
 	}
+
+	@GetMapping("/types")
+	public List<String> getTypes() {
+		return dictionaryService.getAllDictTypes();
+	}
 }

@@ -17,4 +17,6 @@ public interface DictionaryService {
 	Dictionary updateDictionary(Long id, Dictionary dictionary);
 
 	void deleteDictionary(Long id);
+
+	List<String> getAllDictTypes();
 }
