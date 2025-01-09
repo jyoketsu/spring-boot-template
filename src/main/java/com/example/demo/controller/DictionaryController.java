@@ -50,9 +50,9 @@ public class DictionaryController {
 		return dictionaryService.createDictionary(dictionary);
 	}
 
-	@PutMapping("/{id}")
-	public Dictionary updateDictionary(@PathVariable Long id, @RequestBody Dictionary dictionary) {
-		return dictionaryService.updateDictionary(id, dictionary);
+	@PutMapping
+	public Dictionary updateDictionary(@RequestBody Dictionary dictionary) {
+		return dictionaryService.updateDictionary(dictionary);
 	}
 
 	@DeleteMapping("/{id}")

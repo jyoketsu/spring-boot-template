@@ -26,6 +26,9 @@
 [Dictionary](src/main/java/com/example/demo/model/Dictionary.java)  
 [Ingredient](src/main/java/com/example/demo/model/Ingredient.java)
 
+## DTO
+[IngredientBodyDTO](src/main/java/com/example/demo/dto/ingredient/IngredientBodyDTO.java)
+
 ## JPA
 
 [IngredientRepository.java](src/main/java/com/example/demo/repository/IngredientRepository.java)

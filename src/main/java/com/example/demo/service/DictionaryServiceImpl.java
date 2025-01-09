@@ -72,11 +72,12 @@ public class DictionaryServiceImpl implements DictionaryService {
 	}
 
 	@Override
-	@Caching(put = { @CachePut(value = "dictionary", key = "#id") }, evict = {
+	@Caching(put = { @CachePut(value = "dictionary", key = "#dictionary.id") }, evict = {
 			@CacheEvict(value = "dictionaries", allEntries = true),
 			@CacheEvict(value = "dictTypes", allEntries = true)
 	})
-	public Dictionary updateDictionary(Long id, Dictionary dictionary) {
+	public Dictionary updateDictionary(Dictionary dictionary) {
+		Long id = dictionary.getId();
 		return dictionaryRepository.findById(id)
 				.map(existingDictionary -> {
 					existingDictionary.setDictType(dictionary.getDictType());

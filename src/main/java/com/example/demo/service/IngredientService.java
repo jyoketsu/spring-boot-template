@@ -2,18 +2,22 @@ package com.example.demo.service;
 
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+
+import com.example.demo.dto.ingredient.IngredientBodyDTO;
+import com.example.demo.dto.ingredient.IngredientSummaryDTO;
 import com.example.demo.model.Ingredient;
 
 public interface IngredientService {
-	List<Ingredient> getAllIngredients(String name, Long unitId);
+	Page<IngredientSummaryDTO> getAllIngredients(String name, Long unitId, int page, int size);
 
-	Ingredient getIngredientById(Long id);
+	IngredientSummaryDTO getIngredientById(Long id);
 
 	List<Ingredient> getIngredientByName(String name);
 
-	Ingredient createIngredient(String name, Long unitId);
+	Ingredient createIngredient(IngredientBodyDTO ingredientDTO);
 
-	Ingredient updateIngredient(Long id, String name, Long unitId);
+	Ingredient updateIngredient(IngredientBodyDTO ingredientDTO);
 
 	void deleteIngredient(Long id);
 

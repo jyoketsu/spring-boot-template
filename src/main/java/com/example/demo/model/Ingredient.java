@@ -16,6 +16,7 @@ import jakarta.persistence.UniqueConstraint;
 		@UniqueConstraint(columnNames = "name")
 })
 public class Ingredient extends NamedEntity {
+	private static final long serialVersionUID = 1L;
 
 	// 多对一：多个当前实体对象(食材)可以对应一个关联的目标实体对象(单位)
 	@ManyToOne

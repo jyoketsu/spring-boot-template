@@ -14,7 +14,7 @@ public interface DictionaryService {
 
 	Dictionary createDictionary(Dictionary dictionary);
 
-	Dictionary updateDictionary(Long id, Dictionary dictionary);
+	Dictionary updateDictionary(Dictionary dictionary);
 
 	void deleteDictionary(Long id);
 
