@@ -5,6 +5,7 @@ import java.util.Map;
 
 import org.springframework.data.domain.Page;
 
+import com.example.demo.dto.recipe.RecipeListDTO;
 import com.example.demo.dto.recipe.RecipeProjection;
 import com.example.demo.dto.recipe.RecipeResDTO;
 import com.example.demo.dto.recipe.RecipeSummaryDTO;
@@ -12,7 +13,7 @@ import com.example.demo.model.Recipe;
 import com.example.demo.model.RecipeIngredient;
 
 public interface RecipeService {
-	List<RecipeResDTO> getAllRecipes(String name, String description, List<String> ingredientNames);
+	Page<RecipeListDTO> getAllRecipes(String name, String description, String ingredientNames, int page, int size);
 
 	List<RecipeSummaryDTO> getAllWithSummaryUseJPQL();
 

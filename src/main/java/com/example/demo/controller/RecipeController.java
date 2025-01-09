@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.demo.dto.recipe.AddIngredientDTO;
 import com.example.demo.dto.recipe.RecipeDTO;
+import com.example.demo.dto.recipe.RecipeListDTO;
 import com.example.demo.dto.recipe.RecipeProjection;
 import com.example.demo.dto.recipe.RecipeResDTO;
 import com.example.demo.dto.recipe.RecipeSummaryDTO;
@@ -31,12 +32,14 @@ public class RecipeController {
 	@Autowired
 	private RecipeService recipeService;
 
-	@GetMapping("/list/search")
-	public List<RecipeResDTO> getAllRecipes(
+	@GetMapping
+	public Page<RecipeListDTO> getAllRecipes(
 			@RequestParam(required = false) String name,
 			@RequestParam(required = false) String description,
-			@RequestParam(required = false) List<String> ingredientNames) {
-		return recipeService.getAllRecipes(name, description, ingredientNames);
+			@RequestParam(required = false) String ingredientNames,
+			@RequestParam(defaultValue = "0") int page,
+			@RequestParam(defaultValue = "10") int size) {
+		return recipeService.getAllRecipes(name, description, ingredientNames, page, size);
 	}
 
 	@GetMapping("/list/JPQL")

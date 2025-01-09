@@ -113,7 +113,7 @@ GET /ingredients/search?name=鸡蛋&unit=1
 - 在 [RecipeController.java](src/main/java/com/example/demo/controller/RecipeController.java) 中添加接口
 
 ```
-GET /recipes/list/search?name=面条&description=辣&ingredients=肉丝,青椒
+GET /recipes/list/search?name=面条&description=辣&ingredients=肉丝 青椒
 ```
 
 ## Redis 缓存

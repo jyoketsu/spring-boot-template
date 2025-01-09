@@ -1,5 +1,6 @@
 package com.example.demo.service;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -12,6 +13,7 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import com.example.demo.dto.ingredient.IngredientDTO;
+import com.example.demo.dto.recipe.RecipeListDTO;
 import com.example.demo.dto.recipe.RecipeProjection;
 import com.example.demo.dto.recipe.RecipeResDTO;
 import com.example.demo.dto.recipe.RecipeSummaryDTO;
@@ -37,52 +39,25 @@ public class RecipeServiceImpl implements RecipeService {
 	@Autowired
 	private RecipeIngredientRepository recipeIngredientRepository;
 
-	private RecipeResDTO convertToDTO(Recipe recipe) {
-		RecipeResDTO dto = new RecipeResDTO();
-		dto.setId(recipe.getId());
-		dto.setName(recipe.getName());
-		dto.setDescription(recipe.getDescription());
-		dto.setContent(recipe.getContent());
-
-		/**
-		 * 从 recipe 中获取 List<RecipeIngredient>。
-		 * 
-		 * .stream() 将 List<RecipeIngredient> 转换为 Stream<RecipeIngredient>。
-		 * 
-		 * 使用 map 方法，将每个 RecipeIngredient 转换为对应的 RecipeIngredientDTO。
-		 * 
-		 * 将流中的元素收集为一个 List：使用 collect 将流结果重新组装为一个列表。
-		 */
-		dto.setIngredients(recipe.getRecipeIngredients().stream()
-				.map(this::convertIngredientToDTO)
-				.collect(Collectors.toList()));
-		return dto;
-	}
-
-	private IngredientDTO convertIngredientToDTO(RecipeIngredient ingredient) {
-		IngredientDTO dto = new IngredientDTO();
-		dto.setId(ingredient.getIngredient().getId());
-		dto.setIngredientName(ingredient.getIngredient().getName());
-		dto.setQuantity(ingredient.getQuantity());
-		dto.setUnit(ingredient.getIngredient().getUnit().getName());
-		return dto;
-	}
-
 	@Override
-	public List<RecipeResDTO> getAllRecipes(String name, String description, List<String> ingredientNames) {
+	public Page<RecipeListDTO> getAllRecipes(String name, String description, String ingredientNames, int page,
+			int size) {
 		// 通过 Specification 构造查询条件
 		Specification<Recipe> spec = Specification
 				.where(RecipeSpecification.hasName(name))
 				.and(RecipeSpecification.hasDescription(description))
-				.and(RecipeSpecification.hasIngredients(ingredientNames));
+				.and(RecipeSpecification.hasIngredients(
+						ingredientNames != null ? Arrays.asList(ingredientNames.split("\\s+")) : null));
+
+		// 分页请求
+		PageRequest pageable = PageRequest.of(page, size);
 
 		// 执行查询
-		List<Recipe> recipes = recipeRepository.findAll(spec);
+		Page<Recipe> recipes = recipeRepository.findAll(spec, pageable);
 
 		// 将查询结果转换为 DTO
-		return recipes.stream()
-				.map(this::convertToDTO)
-				.collect(Collectors.toList());
+		return recipes
+				.map(this::convert2ListDTO);
 	}
 
 	@Override
@@ -180,6 +155,49 @@ public class RecipeServiceImpl implements RecipeService {
 		}
 
 		return createdRecipe;
+	}
+
+	private RecipeListDTO convert2ListDTO(Recipe recipe) {
+		RecipeListDTO dto = new RecipeListDTO();
+		dto.setId(recipe.getId());
+		dto.setName(recipe.getName());
+		dto.setDescription(recipe.getDescription());
+		dto.setUpdateTime(recipe.getUpdateTime());
+		dto.setIngredients(recipe.getRecipeIngredients().stream()
+				.map(ri -> ri.getIngredient().getName())
+				.collect(Collectors.joining(",")));
+		return dto;
+	}
+
+	private RecipeResDTO convertToDTO(Recipe recipe) {
+		RecipeResDTO dto = new RecipeResDTO();
+		dto.setId(recipe.getId());
+		dto.setName(recipe.getName());
+		dto.setDescription(recipe.getDescription());
+		dto.setContent(recipe.getContent());
+
+		/**
+		 * 从 recipe 中获取 List<RecipeIngredient>。
+		 * 
+		 * .stream() 将 List<RecipeIngredient> 转换为 Stream<RecipeIngredient>。
+		 * 
+		 * 使用 map 方法，将每个 RecipeIngredient 转换为对应的 RecipeIngredientDTO。
+		 * 
+		 * 将流中的元素收集为一个 List：使用 collect 将流结果重新组装为一个列表。
+		 */
+		dto.setIngredients(recipe.getRecipeIngredients().stream()
+				.map(this::convertIngredientToDTO)
+				.collect(Collectors.toList()));
+		return dto;
+	}
+
+	private IngredientDTO convertIngredientToDTO(RecipeIngredient ingredient) {
+		IngredientDTO dto = new IngredientDTO();
+		dto.setId(ingredient.getIngredient().getId());
+		dto.setIngredientName(ingredient.getIngredient().getName());
+		dto.setQuantity(ingredient.getQuantity());
+		dto.setUnit(ingredient.getIngredient().getUnit().getName());
+		return dto;
 	}
 
 }
