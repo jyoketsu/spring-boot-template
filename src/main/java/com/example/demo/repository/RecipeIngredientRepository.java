@@ -6,5 +6,5 @@ import com.example.demo.model.RecipeIngredient;
 import com.example.demo.model.RecipeIngredientId;
 
 public interface RecipeIngredientRepository extends JpaRepository<RecipeIngredient, RecipeIngredientId> {
-
+	void deleteByRecipeId(Long recipeId);
 }

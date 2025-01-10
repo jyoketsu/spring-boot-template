@@ -69,16 +69,6 @@ public class RecipeController {
 		return recipeService.getRecipeById(id);
 	}
 
-	@PostMapping()
-	public Recipe addRecipe(@RequestBody Recipe recipe) {
-		return recipeService.createRecipe(recipe);
-	}
-
-	@PutMapping("/{id}")
-	public Recipe updateRecipe(@PathVariable Long id, @RequestBody Recipe recipe) {
-		return recipeService.updateRecipe(id, recipe);
-	}
-
 	@DeleteMapping("/{id}")
 	public void deleteRecipe(@PathVariable Long id) {
 		recipeService.deleteRecipe(id);
@@ -98,12 +88,13 @@ public class RecipeController {
 		recipeService.deleteIngredientFromRecipe(recipeId, ingredientId);
 	}
 
-	@PostMapping("/createWithIngredients")
+	@PostMapping
 	public Recipe addRecipeWithIngredients(@RequestBody RecipeDTO recipeDto) {
-		Recipe recipe = new Recipe();
-		recipe.setName(recipeDto.getName());
-		recipe.setDescription(recipeDto.getDescription());
-		recipe.setContent(recipeDto.getContent());
-		return recipeService.createRecipeWithIngredients(recipe, recipeDto.getIngredients());
+		return recipeService.createRecipeWithIngredients(recipeDto);
+	}
+
+	@PutMapping
+	public Recipe editRecipeWithIngredients(@RequestBody RecipeDTO recipeDto) {
+		return recipeService.editRecipeWithIngredients(recipeDto);
 	}
 }

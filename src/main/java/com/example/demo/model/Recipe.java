@@ -2,6 +2,8 @@ package com.example.demo.model;
 
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -29,6 +31,7 @@ public class Recipe extends NamedEntity {
 	 * true，则会删除相关的 RecipeIngredient 实例。
 	 */
 	@OneToMany(mappedBy = "recipe", cascade = CascadeType.ALL, orphanRemoval = true)
+	@JsonIgnore
 	private List<RecipeIngredient> recipeIngredients;
 
 	public String getDescription() {

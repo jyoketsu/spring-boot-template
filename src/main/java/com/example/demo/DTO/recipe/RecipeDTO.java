@@ -3,11 +3,20 @@ package com.example.demo.dto.recipe;
 import java.util.Map;
 
 public class RecipeDTO {
+	private Long id;
 	private String name;
 	private String description;
 	private String content;
 	// Map: Key 为 Ingredient ID, Value 为数量
 	private Map<Long, Double> ingredients;
+
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
 
 	public String getName() {
 		return name;

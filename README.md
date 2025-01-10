@@ -27,6 +27,7 @@
 [Ingredient](src/main/java/com/example/demo/model/Ingredient.java)
 
 ## DTO
+
 [IngredientBodyDTO](src/main/java/com/example/demo/dto/ingredient/IngredientBodyDTO.java)
 
 ## JPA
@@ -131,3 +132,9 @@ GET /recipes/list/search?name=面条&description=辣&ingredients=肉丝 青椒
 - [Dockerfile](./Dockerfile)
 - [docker-compose.yml](./docker-compose.yml)
 - [build.sh](./build.sh)
+
+## Transaction
+
+- [RecipeService.java](src/main/java/com/example/demo/service/RecipeServiceImpl.java) 
+  - createRecipeWithIngredients
+  - editRecipeWithIngredients

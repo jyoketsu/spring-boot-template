@@ -11,8 +11,10 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.example.demo.dto.ingredient.IngredientDTO;
+import com.example.demo.dto.recipe.RecipeDTO;
 import com.example.demo.dto.recipe.RecipeListDTO;
 import com.example.demo.dto.recipe.RecipeProjection;
 import com.example.demo.dto.recipe.RecipeResDTO;
@@ -89,21 +91,6 @@ public class RecipeServiceImpl implements RecipeService {
 	}
 
 	@Override
-	public Recipe createRecipe(Recipe recipe) {
-		return recipeRepository.save(recipe);
-	}
-
-	@Override
-	public Recipe updateRecipe(Long id, Recipe recipe) {
-		return recipeRepository.findById(id).map(existingRecipe -> {
-			existingRecipe.setName(recipe.getName());
-			existingRecipe.setDescription(recipe.getDescription());
-			existingRecipe.setContent(recipe.getContent());
-			return recipeRepository.save(existingRecipe);
-		}).orElseThrow(() -> new ResourceNotFoundException("recipe not found with id " + id));
-	}
-
-	@Override
 	public void deleteRecipe(Long id) {
 		recipeRepository.deleteById(id);
 	}
@@ -131,9 +118,32 @@ public class RecipeServiceImpl implements RecipeService {
 	}
 
 	@Override
-	public Recipe createRecipeWithIngredients(Recipe recipe, Map<Long, Double> ingredients) {
+	/**
+	 * Transactional:
+	 * 如果在保存过程中发生异常（例如，ingredientRepository.findById
+	 * 找不到数据，或者recipeIngredientRepository.save 失败），需要确保事务回滚，以避免数据库处于不一致的状态。
+	 * 如果没有 @Transactional，每个 save 操作都是一个独立事务，无法保证原子性。
+	 * 加上 @Transactional 后，只有在整个方法成功执行后，所有操作才会提交，否则回滚。
+	 * 
+	 * 如果方法在一个 @Service 或 @Component 类中，直接在方法上加注解。不建议在 @Controller 层使用事务注解。
+	 * 
+	 * 默认情况下，@Transactional 只会回滚 RuntimeException 或 Error，不会回滚 CheckedException（例如
+	 * IOException）。
+	 * 如果需要回滚 CheckedException，可以通过 rollbackFor 属性配置：
+	 * 
+	 * @Transactional(rollbackFor = Exception.class)
+	 */
+	@Transactional(rollbackFor = Exception.class)
+	public Recipe createRecipeWithIngredients(RecipeDTO recipeDTO) {
 		// 保存recipe
-		Recipe createdRecipe = createRecipe(recipe);
+		Recipe recipe = new Recipe();
+		recipe.setName(recipeDTO.getName());
+		recipe.setDescription(recipeDTO.getDescription());
+		recipe.setContent(recipeDTO.getContent());
+		Recipe createdRecipe = recipeRepository.save(recipe);
+
+		// 获取 ingredients
+		Map<Long, Double> ingredients = recipeDTO.getIngredients();
 
 		// 遍历 ingredients，创建并保存 RecipeIngredient
 		for (Map.Entry<Long, Double> entry : ingredients.entrySet()) {
@@ -155,6 +165,46 @@ public class RecipeServiceImpl implements RecipeService {
 		}
 
 		return createdRecipe;
+	}
+
+	@Override
+	@Transactional(rollbackFor = Exception.class)
+	public Recipe editRecipeWithIngredients(RecipeDTO recipeDTO) {
+		Long recipeId = recipeDTO.getId();
+		// 获取现有的 Recipe
+		Recipe existingRecipe = recipeRepository.findById(recipeId)
+				.orElseThrow(() -> new ResourceNotFoundException("Recipe not found with id " + recipeId));
+
+		// 更新 Recipe 的基本信息
+		existingRecipe.setName(recipeDTO.getName());
+		existingRecipe.setDescription(recipeDTO.getDescription());
+		existingRecipe.setContent(recipeDTO.getContent());
+		// 保存更新后的 Recipe
+		Recipe savedRecipe = recipeRepository.save(existingRecipe);
+
+		// 删除现有的 RecipeIngredients
+		recipeIngredientRepository.deleteByRecipeId(recipeId);
+
+		// 遍历 updatedIngredients，重新创建并保存 RecipeIngredient
+		for (Map.Entry<Long, Double> entry : recipeDTO.getIngredients().entrySet()) {
+			Long ingredientId = entry.getKey();
+			Double quantity = entry.getValue();
+
+			// 获取 Ingredient
+			Ingredient ingredient = ingredientRepository.findById(ingredientId)
+					.orElseThrow(() -> new ResourceNotFoundException("Ingredient not found with id " + ingredientId));
+
+			// 创建 RecipeIngredient
+			RecipeIngredient recipeIngredient = new RecipeIngredient();
+			recipeIngredient.setRecipe(savedRecipe);
+			recipeIngredient.setIngredient(ingredient);
+			recipeIngredient.setQuantity(quantity);
+
+			// 保存 RecipeIngredient
+			recipeIngredientRepository.save(recipeIngredient);
+		}
+
+		return savedRecipe;
 	}
 
 	private RecipeListDTO convert2ListDTO(Recipe recipe) {
