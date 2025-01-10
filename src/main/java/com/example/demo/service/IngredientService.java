@@ -9,7 +9,9 @@ import com.example.demo.dto.ingredient.IngredientSummaryDTO;
 import com.example.demo.model.Ingredient;
 
 public interface IngredientService {
-	Page<IngredientSummaryDTO> getAllIngredients(String name, Long unitId, int page, int size);
+	List<IngredientSummaryDTO> getAll();
+
+	Page<IngredientSummaryDTO> getIngredientPaged(String name, Long unitId, int page, int size);
 
 	IngredientSummaryDTO getIngredientById(Long id);
 

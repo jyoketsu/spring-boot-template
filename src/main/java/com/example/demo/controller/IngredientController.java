@@ -32,13 +32,18 @@ public class IngredientController {
 		this.ingredientService = ingredientService;
 	}
 
+	@GetMapping("/all")
+	public List<IngredientSummaryDTO> getAll() {
+		return ingredientService.getAll();
+	}
+
 	@GetMapping()
-	public Page<IngredientSummaryDTO> getAllIngredients(
+	public Page<IngredientSummaryDTO> getIngredientPaged(
 			@RequestParam(required = false) String name,
 			@RequestParam(required = false) Long unitId,
 			@RequestParam(defaultValue = "0") int page,
 			@RequestParam(defaultValue = "10") int size) {
-		return ingredientService.getAllIngredients(name, unitId, page, size);
+		return ingredientService.getIngredientPaged(name, unitId, page, size);
 	}
 
 	@GetMapping("/{id}")

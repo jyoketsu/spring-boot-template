@@ -244,9 +244,10 @@ public class RecipeServiceImpl implements RecipeService {
 	private IngredientDTO convertIngredientToDTO(RecipeIngredient ingredient) {
 		IngredientDTO dto = new IngredientDTO();
 		dto.setId(ingredient.getIngredient().getId());
-		dto.setIngredientName(ingredient.getIngredient().getName());
+		dto.setName(ingredient.getIngredient().getName());
 		dto.setQuantity(ingredient.getQuantity());
 		dto.setUnit(ingredient.getIngredient().getUnit().getName());
+		dto.setUnitId(ingredient.getIngredient().getUnit().getId());
 		return dto;
 	}
 

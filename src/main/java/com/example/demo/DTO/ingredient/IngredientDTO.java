@@ -2,8 +2,9 @@ package com.example.demo.dto.ingredient;
 
 public class IngredientDTO {
 	private Long id;
-	private String ingredientName;
+	private String name;
 	private Double quantity;
+	private Long unitId;
 	private String unit;
 
 	public Long getId() {
@@ -14,12 +15,12 @@ public class IngredientDTO {
 		this.id = id;
 	}
 
-	public String getIngredientName() {
-		return ingredientName;
+	public String getName() {
+		return name;
 	}
 
-	public void setIngredientName(String ingredientName) {
-		this.ingredientName = ingredientName;
+	public void setName(String name) {
+		this.name = name;
 	}
 
 	public Double getQuantity() {
@@ -37,5 +38,12 @@ public class IngredientDTO {
 	public void setUnit(String unit) {
 		this.unit = unit;
 	}
-}
 
+	public Long getUnitId() {
+		return unitId;
+	}
+
+	public void setUnitId(Long unitId) {
+		this.unitId = unitId;
+	}
+}

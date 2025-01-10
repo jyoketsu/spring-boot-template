@@ -24,9 +24,15 @@ public class IngredientServiceImpl implements IngredientService {
 	public IngredientServiceImpl(IngredientRepository ingredientRepository) {
 		this.ingredientRepository = ingredientRepository;
 	}
+	
+	@Override
+	public List<IngredientSummaryDTO> getAll() {
+		List<Ingredient> ingredients = ingredientRepository.findAll();
+		return ingredients.stream().map(this::convertToSummaryDTO).toList();
+	}
 
 	@Override
-	public Page<IngredientSummaryDTO> getAllIngredients(String name, Long unitId, int page, int size) {
+	public Page<IngredientSummaryDTO> getIngredientPaged(String name, Long unitId, int page, int size) {
 		// 构建查询条件
 		Specification<Ingredient> specification = Specification.where(IngredientSpecification.hasName(name))
 				.and(IngredientSpecification.hasUnitId(unitId));
