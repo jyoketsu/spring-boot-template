@@ -26,11 +26,22 @@ public class GlobalExceptionHandler {
 		return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
 	}
 
-	// 处理唯一约束异常
+	// 处理数据库约束异常
 	@ExceptionHandler(DataIntegrityViolationException.class)
 	public ResponseEntity<ApiResponse<Void>> handleDataIntegrityViolation(DataIntegrityViolationException e) {
-		ApiResponse<Void> response = ApiResponse.error(409, "Conflict: Duplicate entry detected.");
-		return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
+		Throwable rootCause = e.getRootCause();
+		String errorMessage;
+
+		if (rootCause != null && rootCause.getMessage().contains("Data too long")) {
+			errorMessage = "Data too long for column: Ensure your input does not exceed the maximum allowed length.";
+		} else if (rootCause != null && rootCause.getMessage().contains("Duplicate entry")) {
+			errorMessage = "Conflict: Duplicate entry detected.";
+		} else {
+			errorMessage = "Unexpected data integrity violation.";
+		}
+
+		ApiResponse<Void> response = ApiResponse.error(400, errorMessage);
+		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
 	}
 
 	// 处理 JPA 的唯一约束异常

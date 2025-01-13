@@ -16,7 +16,8 @@ public class Recipe extends NamedEntity {
 	@Column(name = "description")
 	private String description;
 
-	@Column(name = "content")
+	// 长文本（超过几千字符）使用@Column(columnDefinition = "TEXT") 来强制指定映射为 MySQL 的 TEXT 类型
+	@Column(name = "content", columnDefinition = "TEXT")
 	private String content;
 
 	/**
