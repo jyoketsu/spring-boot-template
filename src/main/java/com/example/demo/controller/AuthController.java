@@ -20,6 +20,8 @@ import jakarta.validation.Valid;
 
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -60,6 +62,15 @@ public class AuthController {
 		} catch (BadCredentialsException e) {
 			throw new RuntimeException("Invalid username or password");
 		}
+	}
+
+	@GetMapping
+	public AuthResponseDTO getUserByToken(@RequestParam String token) {
+		String username = jwtUtils.getUsernameFromToken(token);
+		User user = authService.findByUsername(username).orElseThrow(() -> new RuntimeException("User not found"));
+		AuthResponseDTO response = new AuthResponseDTO();
+		response.setToken(token).setUsername(username).setRole(user.getRole()).setAvatar(user.getAvatar());
+		return response;
 	}
 
 }
