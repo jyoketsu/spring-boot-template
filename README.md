@@ -135,6 +135,24 @@ GET /recipes/list/search?name=面条&description=辣&ingredients=肉丝 青椒
 
 ## Transaction
 
-- [RecipeService.java](src/main/java/com/example/demo/service/RecipeServiceImpl.java) 
-  - createRecipeWithIngredients
-  - editRecipeWithIngredients
+- [RecipeService.java](src/main/java/com/example/demo/service/RecipeServiceImpl.java)
+  - `createRecipeWithIngredients`
+  - `editRecipeWithIngredients`
+
+## lombok
+
+## Spring Security & JWT (注册登录)
+
+- [pom.xml](/pom.xml) 添加 spring-boot-starter-security
+- 实现 `UserDetailsService` : [CustomUserDetailsService](src/main/java/com/example/demo/service/CustomUserDetailsService.java)
+- 自定义 JWT 过滤器 : [JwtAuthenticationFilter](src/main/java/com/example/demo/util/JwtAuthenticationFilter.java)
+- 通过 `SecurityFilterChain` 配置 `Spring Security` : [SecurityConfig](src/main/java/com/example/demo/config/SecurityConfig.java)
+- JWT 工具类 : [JwtUtils](src/main/java/com/example/demo/util/JwtUtils.java)
+- [AuthService](src/main/java/com/example/demo/service/AuthServiceImpl.java)
+- [AuthController](src/main/java/com/example/demo/controller/AuthController.java)
+
+## 密码加密存储：BCrypt
+- [SecurityConfig](src/main/java/com/example/demo/config/SecurityConfig.java)
+  - `passwordEncoder`
+- [AuthService](src/main/java/com/example/demo/service/AuthServiceImpl.java)
+  - `register` 
