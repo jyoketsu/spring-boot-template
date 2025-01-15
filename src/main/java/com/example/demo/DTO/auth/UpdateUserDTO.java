@@ -1,16 +1,15 @@
 package com.example.demo.dto.auth;
 
-import com.example.demo.enums.Role;
-
+import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 import lombok.experimental.Accessors;
 
 @Data
 @Accessors(chain = true)
-public class AuthResponseDTO {
-	private String token;
+public class UpdateUserDTO {
+	@NotBlank(message = "Id is required")
 	private Long id;
+	@NotBlank(message = "Username is required")
 	private String username;
-	private Role role;
 	private String avatar;
 }

@@ -9,8 +9,14 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.experimental.Accessors;
 
 @Entity
+@Data
+@Accessors(chain = true)
+@EqualsAndHashCode(callSuper = true)
 @Table(name = "recipes")
 public class Recipe extends NamedEntity {
 	@Column(name = "description")
@@ -34,28 +40,4 @@ public class Recipe extends NamedEntity {
 	@OneToMany(mappedBy = "recipe", cascade = CascadeType.ALL, orphanRemoval = true)
 	@JsonIgnore
 	private List<RecipeIngredient> recipeIngredients;
-
-	public String getDescription() {
-		return description;
-	}
-
-	public void setDescription(String description) {
-		this.description = description;
-	}
-
-	public String getContent() {
-		return content;
-	}
-
-	public void setContent(String content) {
-		this.content = content;
-	}
-
-	public List<RecipeIngredient> getRecipeIngredients() {
-		return recipeIngredients;
-	}
-
-	public void setRecipeIngredients(List<RecipeIngredient> recipeIngredients) {
-		this.recipeIngredients = recipeIngredients;
-	}
 }

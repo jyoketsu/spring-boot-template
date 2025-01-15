@@ -7,8 +7,10 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.MapsId;
 import jakarta.persistence.Table;
+import lombok.Data;
 
 @Entity
+@Data
 @Table(name = "recipe_ingredients")
 public class RecipeIngredient {
 	@EmbeddedId
@@ -28,36 +30,4 @@ public class RecipeIngredient {
 
 	@Column(name = "quantity")
 	private Double quantity;
-
-	public RecipeIngredientId getId() {
-		return id;
-	}
-
-	public void setId(RecipeIngredientId id) {
-		this.id = id;
-	}
-
-	public Recipe getRecipe() {
-		return recipe;
-	}
-
-	public void setRecipe(Recipe recipe) {
-		this.recipe = recipe;
-	}
-
-	public Ingredient getIngredient() {
-		return ingredient;
-	}
-
-	public void setIngredient(Ingredient ingredient) {
-		this.ingredient = ingredient;
-	}
-
-	public Double getQuantity() {
-		return quantity;
-	}
-
-	public void setQuantity(Double quantity) {
-		this.quantity = quantity;
-	}
 }

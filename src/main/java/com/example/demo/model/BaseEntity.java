@@ -16,6 +16,8 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 
 import jakarta.persistence.Id;
 import jakarta.persistence.MappedSuperclass;
+import lombok.Data;
+import lombok.experimental.Accessors;
 
 // @MappedSuperclass 是 JPA 提供的一个注解，用于定义继承映射的基类。主要特点：
 // 不会生成对应的数据库表
@@ -24,6 +26,8 @@ import jakarta.persistence.MappedSuperclass;
 @MappedSuperclass
 // @EntityListeners 注解用于指定一个或多个实体监听器类，这些类中的回调方法将在实体上发生的生命周期事件发生时被调用。
 @EntityListeners(AuditingEntityListener.class)
+@Data
+@Accessors(chain = true)
 public class BaseEntity implements Serializable {
 	@Id
 	// 数据库的自增主键
@@ -42,20 +46,4 @@ public class BaseEntity implements Serializable {
 
 	// 必须有一个无参构造函数（可以是显式声明的或隐式的）。这是因为 JPA 在实例化实体类时，需要通过反射来创建对象，而反射需要调用无参构造函数。
 	// 如果你没有声明任何构造函数，Java 会默认提供一个无参构造函数。但如果你声明了其他参数化构造函数，就需要显式地定义无参构造函数。
-
-	public Long getId() {
-		return id;
-	}
-
-	public void setId(Long id) {
-		this.id = id;
-	}
-
-	public LocalDateTime getCreateTime() {
-		return createTime;
-	}
-
-	public LocalDateTime getUpdateTime() {
-		return updateTime;
-	}
 }

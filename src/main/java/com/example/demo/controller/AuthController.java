@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.demo.dto.auth.AuthRequestDTO;
 import com.example.demo.dto.auth.AuthResponseDTO;
+import com.example.demo.dto.auth.UpdateUserDTO;
 import com.example.demo.model.User;
 import com.example.demo.service.AuthService;
 import com.example.demo.util.JwtUtils;
@@ -22,6 +23,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.PutMapping;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -69,8 +71,13 @@ public class AuthController {
 		String username = jwtUtils.getUsernameFromToken(token);
 		User user = authService.findByUsername(username).orElseThrow(() -> new RuntimeException("User not found"));
 		AuthResponseDTO response = new AuthResponseDTO();
-		response.setToken(token).setUsername(username).setRole(user.getRole()).setAvatar(user.getAvatar());
+		response.setToken(token).setId(user.getId()).setUsername(username).setRole(user.getRole())
+				.setAvatar(user.getAvatar());
 		return response;
 	}
 
+	@PutMapping
+	public User update(@RequestBody UpdateUserDTO user) {
+		return authService.updateUser(user);
+	}
 }

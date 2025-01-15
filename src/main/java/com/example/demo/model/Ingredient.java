@@ -10,8 +10,14 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.experimental.Accessors;
 
 @Entity
+@Data
+@EqualsAndHashCode(callSuper = true)
+@Accessors(chain = true)
 @Table(name = "ingredients", uniqueConstraints = {
 		@UniqueConstraint(columnNames = "name")
 })
@@ -29,20 +35,4 @@ public class Ingredient extends NamedEntity {
 	@OneToMany(mappedBy = "ingredient", cascade = CascadeType.ALL, orphanRemoval = true)
 	@JsonIgnore // 避免无限递归
 	private List<RecipeIngredient> recipeIngredients;
-
-	public Dictionary getUnit() {
-		return unit;
-	}
-
-	public void setUnit(Dictionary unit) {
-		this.unit = unit;
-	}
-
-	public List<RecipeIngredient> getRecipeIngredients() {
-		return recipeIngredients;
-	}
-
-	public void setRecipeIngredients(List<RecipeIngredient> recipeIngredients) {
-		this.recipeIngredients = recipeIngredients;
-	}
 }

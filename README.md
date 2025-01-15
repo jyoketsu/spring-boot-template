@@ -29,6 +29,7 @@
 ## DTO
 
 [IngredientBodyDTO](src/main/java/com/example/demo/dto/ingredient/IngredientBodyDTO.java)
+[AuthRequestDTO](src/main/java/com/example/demo/dto/auth/AuthRequestDTO.java)
 
 ## JPA
 
@@ -141,6 +142,9 @@ GET /recipes/list/search?name=面条&description=辣&ingredients=肉丝 青椒
 
 ## lombok
 
+[User.java](src/main/java/com/example/demo/model/User.java)
+[RecipeIngredientId.java](src/main/java/com/example/demo/model/RecipeIngredientId.java)
+
 ## Spring Security & JWT (注册登录)
 
 - [pom.xml](/pom.xml) 添加 spring-boot-starter-security
@@ -152,7 +156,8 @@ GET /recipes/list/search?name=面条&description=辣&ingredients=肉丝 青椒
 - [AuthController](src/main/java/com/example/demo/controller/AuthController.java)
 
 ## 密码加密存储：BCrypt
+
 - [SecurityConfig](src/main/java/com/example/demo/config/SecurityConfig.java)
   - `passwordEncoder`
 - [AuthService](src/main/java/com/example/demo/service/AuthServiceImpl.java)
-  - `register` 
+  - `register`
