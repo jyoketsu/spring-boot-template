@@ -96,6 +96,12 @@ public class RecipeServiceImpl implements RecipeService {
 	}
 
 	@Override
+	@Transactional
+	public void deleteRecipes(List<Long> ids) {
+		recipeRepository.deleteAllByIdInBatch(ids);
+	}
+
+	@Override
 	public RecipeIngredient addIngredient2Recipe(Long recipeId, Long ingredientId, Double quantity) {
 		RecipeIngredient recipeIngredient = new RecipeIngredient();
 

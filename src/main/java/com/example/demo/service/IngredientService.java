@@ -23,4 +23,6 @@ public interface IngredientService {
 
 	void deleteIngredient(Long id);
 
+	void deleteIngredients(List<Long> ids);
+
 }

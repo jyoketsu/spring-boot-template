@@ -74,6 +74,11 @@ public class RecipeController {
 		recipeService.deleteRecipe(id);
 	}
 
+	@DeleteMapping
+	public void deleteRecipes(@RequestBody List<Long> ids) {
+		recipeService.deleteRecipes(ids);
+	}
+
 	@PostMapping("/addIngredient")
 	public RecipeIngredient addIngredient2Recipe(@RequestBody AddIngredientDTO addIngredientDto) {
 		return recipeService.addIngredient2Recipe(

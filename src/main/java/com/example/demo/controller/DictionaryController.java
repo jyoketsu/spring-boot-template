@@ -60,6 +60,11 @@ public class DictionaryController {
 		dictionaryService.deleteDictionary(id);
 	}
 
+	@DeleteMapping
+	public void deleteDictionaries(@RequestBody List<Long> ids) {
+		dictionaryService.deleteDictionaries(ids);
+	}
+
 	@GetMapping("/types")
 	public List<String> getTypes() {
 		return dictionaryService.getAllDictTypes();

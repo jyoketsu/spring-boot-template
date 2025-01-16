@@ -66,6 +66,11 @@ public class IngredientController {
 		ingredientService.deleteIngredient(id);
 	}
 
+	@DeleteMapping
+	public void deleteIngredients(@RequestBody List<Long> ids) {
+		ingredientService.deleteIngredients(ids);
+	}
+
 	@PutMapping
 	public Ingredient updateIngredient(
 			@RequestBody @Valid IngredientBodyDTO ingredientDTO) {

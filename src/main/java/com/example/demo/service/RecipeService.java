@@ -26,6 +26,8 @@ public interface RecipeService {
 
 	void deleteRecipe(Long id);
 
+	void deleteRecipes(List<Long> ids);
+
 	RecipeIngredient addIngredient2Recipe(Long recipeId, Long ingredientId, Double quantity);
 
 	void deleteIngredientFromRecipe(Long recipeId, Long ingredientId);

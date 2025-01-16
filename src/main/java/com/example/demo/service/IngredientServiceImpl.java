@@ -6,6 +6,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.example.demo.dto.ingredient.IngredientBodyDTO;
 import com.example.demo.dto.ingredient.IngredientSummaryDTO;
@@ -24,7 +25,7 @@ public class IngredientServiceImpl implements IngredientService {
 	public IngredientServiceImpl(IngredientRepository ingredientRepository) {
 		this.ingredientRepository = ingredientRepository;
 	}
-	
+
 	@Override
 	public List<IngredientSummaryDTO> getAll() {
 		List<Ingredient> ingredients = ingredientRepository.findAll();
@@ -87,6 +88,12 @@ public class IngredientServiceImpl implements IngredientService {
 	@Override
 	public void deleteIngredient(Long id) {
 		ingredientRepository.deleteById(id);
+	}
+
+	@Override
+	@Transactional
+	public void deleteIngredients(List<Long> ids) {
+		ingredientRepository.deleteAllByIdInBatch(ids);
 	}
 
 	// 转换方法

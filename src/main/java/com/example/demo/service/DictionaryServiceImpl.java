@@ -9,6 +9,7 @@ import org.springframework.cache.annotation.Caching;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.example.demo.dto.PageResponse;
 import com.example.demo.exception.ResourceNotFoundException;
@@ -103,6 +104,16 @@ public class DictionaryServiceImpl implements DictionaryService {
 	})
 	public void deleteDictionary(Long id) {
 		dictionaryRepository.deleteById(id);
+	}
+
+	@Override
+	@Transactional
+	@Caching(evict = {
+			@CacheEvict(value = "dictionaries", allEntries = true),
+			@CacheEvict(value = "dictTypes", allEntries = true)
+	})
+	public void deleteDictionaries(List<Long> ids) {
+		dictionaryRepository.deleteAllByIdInBatch(ids);
 	}
 
 	@Override
