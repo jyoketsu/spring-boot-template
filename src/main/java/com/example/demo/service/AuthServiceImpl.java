@@ -62,6 +62,9 @@ public class AuthServiceImpl implements AuthService {
 					if (user.getAvatar() != null && !user.getAvatar().isEmpty()) {
 						existingUser.setAvatar(user.getAvatar());
 					}
+					if (user.getPassword() != null && !user.getPassword().isEmpty()) {
+						existingUser.setPassword(passwordEncoder.encode(user.getPassword()));
+					}
 					User updatedUser = userRepository.save(existingUser);
 					return updatedUser;
 				})

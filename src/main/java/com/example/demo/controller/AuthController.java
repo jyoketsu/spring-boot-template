@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.demo.dto.auth.AuthRequestDTO;
 import com.example.demo.dto.auth.AuthResponseDTO;
+import com.example.demo.dto.auth.ChangePasswordDTO;
 import com.example.demo.dto.auth.UpdateUserDTO;
 import com.example.demo.model.User;
 import com.example.demo.service.AuthService;
@@ -80,4 +81,27 @@ public class AuthController {
 	public User update(@RequestBody UpdateUserDTO user) {
 		return authService.updateUser(user);
 	}
+
+	@PostMapping("/changePassword")
+	public User changePassword(@RequestBody @Valid ChangePasswordDTO request) {
+		try {
+			UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
+					request.getUsername(), request.getPassword());
+
+			Authentication authentication = authenticationManager.authenticate(authenticationToken);
+
+			UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+
+			String username = userDetails.getUsername();
+			User user = authService.findByUsername(username).orElseThrow(() -> new RuntimeException("User not found"));
+
+			UpdateUserDTO userDTO = new UpdateUserDTO();
+			userDTO.setId(user.getId()).setPassword(request.getNewPassword());
+
+			return authService.updateUser(userDTO);
+		} catch (BadCredentialsException e) {
+			throw new RuntimeException("Invalid username or password");
+		}
+	}
+
 }

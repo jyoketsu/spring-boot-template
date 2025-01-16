@@ -12,4 +12,5 @@ public class UpdateUserDTO {
 	@NotBlank(message = "Username is required")
 	private String username;
 	private String avatar;
+	private String password;
 }
