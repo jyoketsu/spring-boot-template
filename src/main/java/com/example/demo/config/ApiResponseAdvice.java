@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.http.server.ServerHttpRequest;
 import org.springframework.http.server.ServerHttpResponse;
 import org.springframework.web.bind.annotation.ControllerAdvice;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice;
@@ -14,14 +15,20 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice;
 import com.example.demo.dto.ApiResponse;
 
 @ControllerAdvice
-@Order(2)  // 优先级较高，后执行
+@Order(2) // 优先级较高，后执行
 public class ApiResponseAdvice implements ResponseBodyAdvice<Object> {
 
 	@SuppressWarnings("rawtypes")
 	@Override
 	public boolean supports(MethodParameter returnType, Class converterType) {
-		// 支持所有返回值类型的拦截
-		return true;
+		// 获取当前方法的返回类型
+		MediaType contentType = returnType.getContainingClass().getAnnotation(RestController.class) != null
+				? MediaType.APPLICATION_JSON
+				: MediaType.ALL;
+
+		// 如果是图片或二进制内容，跳过拦截
+		return !(contentType.includes(MediaType.IMAGE_PNG) || contentType.includes(MediaType.IMAGE_JPEG)
+				|| contentType.includes(MediaType.APPLICATION_OCTET_STREAM));
 	}
 
 	@SuppressWarnings("rawtypes")
@@ -36,6 +43,13 @@ public class ApiResponseAdvice implements ResponseBodyAdvice<Object> {
 					RequestAttributes.SCOPE_REQUEST);
 			if (path == null) {
 				path = request.getURI().getPath();
+			}
+
+			// 如果是二进制流，直接返回原始 body
+			if (selectedContentType.includes(MediaType.IMAGE_PNG)
+					|| selectedContentType.includes(MediaType.IMAGE_JPEG)
+					|| selectedContentType.includes(MediaType.APPLICATION_OCTET_STREAM)) {
+				return body;
 			}
 
 			// 如果是 Swagger 相关路径，直接返回原始 body

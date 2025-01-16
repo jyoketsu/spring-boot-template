@@ -37,7 +37,8 @@ public class SecurityConfig {
 								"/v3/api-docs/**",
 								"/swagger-resources/**",
 								"/webjars/**",
-								"/api/auth/**")
+								"/api/auth/**",
+								"/api/captcha")
 						.permitAll()
 						.anyRequest().authenticated())
 				// 使用自定义的过滤器
