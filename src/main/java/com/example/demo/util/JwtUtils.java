@@ -1,12 +1,16 @@
 package com.example.demo.util;
 
 import java.util.Date;
+import java.util.concurrent.TimeUnit;
 
 import javax.crypto.SecretKey;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 
@@ -17,18 +21,28 @@ import io.jsonwebtoken.Jwts;
 public class JwtUtils {
 	// HS256
 	SecretKey key = Jwts.SIG.HS256.key().build();
-	// 24小时
-	private final long jwtExpirationMs = 86400000;
 
-	/**
-	 * Generates a JWT token for the given user details.
-	 *
-	 * @param userDetails the user details containing the username
-	 * @return a signed JWT token as a String
-	 */
-	public String generateToken(UserDetails userDetails) {
+	// 2小时
+	private Long accessTokenExpiration = 7200000L;
+	// 7天
+	private Long refreshTokenExpiration = 604800000L;
+
+	private static final String TOKEN_BLACKLIST_PREFIX = "token:blacklist:";
+
+	@Autowired
+	private RedisTemplate<String, Object> redisTemplate;
+
+	public String generateAccessToken(UserDetails userDetails) {
+		return generateToken(userDetails, accessTokenExpiration);
+	}
+
+	public String generateRefreshToken(UserDetails userDetails) {
+		return generateToken(userDetails, refreshTokenExpiration);
+	}
+
+	private String generateToken(UserDetails userDetails, long expiration) {
 		String username = userDetails.getUsername();
-		Date expirationDate = new Date((new Date()).getTime() + jwtExpirationMs);
+		Date expirationDate = new Date(System.currentTimeMillis() + expiration);
 		String jws = Jwts.builder().subject(username).expiration(expirationDate).signWith(key).compact();
 		return jws;
 	}
@@ -57,5 +71,27 @@ public class JwtUtils {
 		} catch (JwtException e) {
 			return false;
 		}
+	}
+
+	public boolean isTokenBlacklisted(String token) {
+		return Boolean.TRUE.equals(redisTemplate.hasKey(TOKEN_BLACKLIST_PREFIX + token));
+	}
+
+	public void addToBlacklist(String token) {
+		// 获取token的过期时间
+		Date expiration = getExpirationDateFromToken(token);
+		long ttl = expiration.getTime() - System.currentTimeMillis();
+		if (ttl > 0) {
+			redisTemplate.opsForValue().set(
+					TOKEN_BLACKLIST_PREFIX + token,
+					"blacklisted",
+					ttl,
+					TimeUnit.MILLISECONDS);
+		}
+	}
+
+	public Date getExpirationDateFromToken(String token) {
+		Claims claims = Jwts.parser().verifyWith(key).build().parseSignedClaims(token).getPayload();
+		return claims.getExpiration();
 	}
 }

@@ -8,7 +8,6 @@ import lombok.experimental.Accessors;
 @Data
 @Accessors(chain = true)
 public class AuthResponseDTO {
-	private String token;
 	private Long id;
 	private String username;
 	private Role role;

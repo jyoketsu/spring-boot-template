@@ -160,7 +160,15 @@ GET /recipes/list/search?name=面条&description=辣&ingredients=肉丝 青椒
 - [SecurityConfig](src/main/java/com/example/demo/config/SecurityConfig.java)
   - `passwordEncoder`
 - [AuthService](src/main/java/com/example/demo/service/AuthServiceImpl.java)
+
   - `register`
+
+## AccessToken & RefreshToken
+
+- [AuthController](src/main/java/com/example/demo/controller/AuthController.java)
+- `login`
+- `validateAndRefresh`
+- `refresh`
 
 ## Kaptcha
 

@@ -15,15 +15,20 @@ import com.example.demo.dto.auth.AuthRequestDTO;
 import com.example.demo.dto.auth.AuthResponseDTO;
 import com.example.demo.dto.auth.ChangePasswordDTO;
 import com.example.demo.dto.auth.UpdateUserDTO;
+import com.example.demo.exception.UnauthorizedException;
 import com.example.demo.model.User;
 import com.example.demo.service.AuthService;
+import com.example.demo.service.CustomUserDetailsService;
 import com.example.demo.util.JwtUtils;
 
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -46,6 +51,9 @@ public class AuthController {
 	@Autowired
 	private RedisTemplate<String, Object> redisTemplate;
 
+	@Autowired
+	private CustomUserDetailsService userDetailsService;
+
 	/**
 	 * 用户注册
 	 * 
@@ -66,7 +74,7 @@ public class AuthController {
 	 */
 	@PostMapping("/login")
 	public AuthResponseDTO login(@RequestHeader("Captcha-Id") String captchaId,
-			@RequestBody @Valid AuthRequestDTO request) {
+			@RequestBody @Valid AuthRequestDTO request, HttpServletResponse response) {
 		// 验证验证码
 		String captcha = (String) redisTemplate.opsForValue().get(captchaId);
 		if (captcha == null || !request.getCaptcha().equals(captcha)) {
@@ -87,18 +95,102 @@ public class AuthController {
 			UserDetails userDetails = (UserDetails) authentication.getPrincipal();
 
 			// 生成JWT令牌
-			String jwt = jwtUtils.generateToken(userDetails);
+			String accessToken = jwtUtils.generateAccessToken(userDetails);
+			String refreshToken = jwtUtils.generateRefreshToken(userDetails);
+
+			// 设置 HttpOnly 和 Secure 属性的 Cookie
+			Cookie accessTokenCookie = new Cookie("accessToken", accessToken);
+			accessTokenCookie.setHttpOnly(true);
+			accessTokenCookie.setSecure(false);
+			accessTokenCookie.setPath("/");
+			accessTokenCookie.setMaxAge(7200); // 2小时
+
+			Cookie refreshTokenCookie = new Cookie("refreshToken", refreshToken);
+			refreshTokenCookie.setHttpOnly(true);
+			refreshTokenCookie.setSecure(false);
+			// refreshTokenCookie 只有在访问 /api/auth/refresh 路径时才会被发送
+			refreshTokenCookie.setPath("/api/auth/token");
+			refreshTokenCookie.setMaxAge(604800); // 7天
+
+			response.addCookie(accessTokenCookie);
+			response.addCookie(refreshTokenCookie);
 
 			// 获取用户名并查找用户
 			String username = userDetails.getUsername();
 			User user = authService.findByUsername(username).orElseThrow(() -> new RuntimeException("User not found"));
 
-			// 构建响应对象
-			AuthResponseDTO response = new AuthResponseDTO();
-			response.setToken(jwt).setUsername(username).setRole(user.getRole()).setAvatar(user.getAvatar());
-			return response;
+			return new AuthResponseDTO()
+					.setUsername(username)
+					.setRole(user.getRole())
+					.setAvatar(user.getAvatar());
 		} catch (BadCredentialsException e) {
 			throw new RuntimeException("Invalid username or password");
+		}
+	}
+
+	@PostMapping("/token/refresh")
+	public AuthResponseDTO refresh(@CookieValue("refreshToken") String refreshToken, HttpServletResponse response) {
+		if (!jwtUtils.validateToken(refreshToken) || jwtUtils.isTokenBlacklisted(refreshToken)) {
+			throw new UnauthorizedException("Invalid refresh token");
+		}
+
+		// 将旧的 refresh token 加入黑名单
+		jwtUtils.addToBlacklist(refreshToken);
+
+		String username = jwtUtils.getUsernameFromToken(refreshToken);
+		UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+
+		// 生成新的 token
+		String newAccessToken = jwtUtils.generateAccessToken(userDetails);
+		String newRefreshToken = jwtUtils.generateRefreshToken(userDetails);
+
+		// 设置 HttpOnly 和 Secure 属性的 Cookie
+		Cookie accessTokenCookie = new Cookie("accessToken", newAccessToken);
+		accessTokenCookie.setHttpOnly(true);
+		accessTokenCookie.setSecure(false);
+		accessTokenCookie.setPath("/");
+		accessTokenCookie.setMaxAge(7200); // 2小时
+
+		Cookie refreshTokenCookie = new Cookie("refreshToken", newRefreshToken);
+		refreshTokenCookie.setHttpOnly(true);
+		refreshTokenCookie.setSecure(false);
+		refreshTokenCookie.setPath("/api/auth/token");
+		refreshTokenCookie.setMaxAge(604800); // 7天
+
+		response.addCookie(accessTokenCookie);
+		response.addCookie(refreshTokenCookie);
+
+		User user = authService.findByUsername(username)
+				.orElseThrow(() -> new RuntimeException("User not found"));
+
+		return new AuthResponseDTO()
+				.setUsername(user.getUsername())
+				.setRole(user.getRole())
+				.setAvatar(user.getAvatar());
+	}
+
+	@GetMapping("/token/validate-and-refresh")
+	public AuthResponseDTO validateAndRefresh(@CookieValue("accessToken") String accessToken,
+			@CookieValue("refreshToken") String refreshToken,
+			HttpServletResponse response) {
+		System.out.println(accessToken);
+		System.out.println(refreshToken);
+		if (jwtUtils.validateToken(accessToken)) {
+			return getUserByToken(accessToken);
+		} else {
+			return refresh(refreshToken, response);
+		}
+	}
+
+	@GetMapping("/validate")
+	public boolean validateAccessToken(@CookieValue("accessToken") String accessToken) {
+		return jwtUtils.validateToken(accessToken);
+	}
+
+	@PostMapping("/logout")
+	public void logout(@RequestHeader("Refresh-Token") String refreshToken) {
+		if (refreshToken != null) {
+			jwtUtils.addToBlacklist(refreshToken);
 		}
 	}
 
@@ -116,7 +208,10 @@ public class AuthController {
 		User user = authService.findByUsername(username).orElseThrow(() -> new RuntimeException("User not found"));
 		// 构建响应对象
 		AuthResponseDTO response = new AuthResponseDTO();
-		response.setToken(token).setId(user.getId()).setUsername(username).setRole(user.getRole())
+		response
+				.setId(user.getId())
+				.setUsername(username)
+				.setRole(user.getRole())
 				.setAvatar(user.getAvatar());
 		return response;
 	}

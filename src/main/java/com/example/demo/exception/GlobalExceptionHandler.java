@@ -26,6 +26,19 @@ public class GlobalExceptionHandler {
 		return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
 	}
 
+	@ExceptionHandler(UnauthorizedException.class)
+	public ResponseEntity<ApiResponse<Void>> handleUnauthorized(UnauthorizedException e) {
+		ApiResponse<Void> response = ApiResponse.error(401, e.getMessage());
+		return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
+	}
+
+
+	@ExceptionHandler(ForbiddenException.class)
+	public ResponseEntity<ApiResponse<Void>> handleForbidden(ForbiddenException e) {
+		ApiResponse<Void> response = ApiResponse.error(403, e.getMessage());
+		return ResponseEntity.status(HttpStatus.FORBIDDEN).body(response);
+	}
+
 	// 处理数据库约束异常
 	@ExceptionHandler(DataIntegrityViolationException.class)
 	public ResponseEntity<ApiResponse<Void>> handleDataIntegrityViolation(DataIntegrityViolationException e) {

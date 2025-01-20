@@ -8,10 +8,12 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.filter.OncePerRequestFilter;
 
+import com.example.demo.exception.UnauthorizedException;
 import com.example.demo.service.CustomUserDetailsService;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
@@ -23,16 +25,16 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 	private CustomUserDetailsService userDetailsService;
 
 	/**
-	 * Processes the HTTP request by parsing the JWT token from the Authorization
-	 * header and authenticating the user. If the token is valid, the user is
-	 * authenticated by
-	 * setting the Authentication object in the SecurityContext.
+	 * 处理 HTTP 请求，通过解析 Authorization 头中的 JWT 令牌进行用户认证。
+	 * 如果令牌有效，则通过在 SecurityContext 中设置 Authentication 对象来认证用户。
 	 */
 	@Override
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
 			throws ServletException, IOException {
 		// 获取token
-		String token = parseJwt(request);
+		// String token = parseJwt(request);
+		String token = getJwtFromCookies(request);
+
 		if (token != null && jwtUtils.validateToken(token)) {
 			// 从token中获取用户信息
 			String username = jwtUtils.getUsernameFromToken(token);
@@ -51,8 +53,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 	}
 
 	/**
-	 * Parses the JWT token from the Authorization header. If the token is valid,
-	 * returns the token, otherwise returns null.
+	 * 从 Authorization 头中解析 JWT 令牌。如果令牌有效，则返回令牌，否则返回 null。
 	 * 
 	 * @param request the HttpServletRequest
 	 * @return the parsed JWT token, or null if invalid or missing
@@ -61,6 +62,18 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 		String headerAuth = request.getHeader("Authorization");
 		if (headerAuth != null && headerAuth.startsWith("Bearer ")) {
 			return headerAuth.substring(7);
+		}
+		return null;
+	}
+
+	private String getJwtFromCookies(HttpServletRequest request) {
+		Cookie[] cookies = request.getCookies();
+		if (cookies != null) {
+			for (Cookie cookie : cookies) {
+				if ("accessToken".equals(cookie.getName())) {
+					return cookie.getValue();
+				}
+			}
 		}
 		return null;
 	}
