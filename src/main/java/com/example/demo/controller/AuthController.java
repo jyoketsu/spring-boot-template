@@ -175,20 +175,18 @@ public class AuthController {
 			HttpServletResponse response) {
 		System.out.println(accessToken);
 		System.out.println(refreshToken);
-		if (jwtUtils.validateToken(accessToken)) {
+		if (jwtUtils.validateToken(accessToken) && !jwtUtils.isTokenBlacklisted(accessToken)) {
 			return getUserByToken(accessToken);
 		} else {
 			return refresh(refreshToken, response);
 		}
 	}
 
-	@GetMapping("/validate")
-	public boolean validateAccessToken(@CookieValue("accessToken") String accessToken) {
-		return jwtUtils.validateToken(accessToken);
-	}
-
-	@PostMapping("/logout")
-	public void logout(@RequestHeader("Refresh-Token") String refreshToken) {
+	@PostMapping("/token/logout")
+	public void logout(@CookieValue("accessToken") String accessToken, @CookieValue("refreshToken") String refreshToken) {
+		if (accessToken != null) {
+			jwtUtils.addToBlacklist(accessToken);
+		}
 		if (refreshToken != null) {
 			jwtUtils.addToBlacklist(refreshToken);
 		}
