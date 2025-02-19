@@ -20,7 +20,7 @@ services:
     ports:
       - '6379:6379'
 
-  app:
+  backend:
     image: demo-app:latest
     ports:
       - "8080:8080"
@@ -29,6 +29,11 @@ services:
     environment:
       - DB_HOST=mysql
       - REDIS_HOST=redis
-
+  frontend:
+    image: vue3-template:latest
+    ports:
+      - "5173:80"
+    depends_on:
+      - backend
 volumes:
   mysql_data: {} # 声明命名卷

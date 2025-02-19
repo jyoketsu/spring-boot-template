@@ -170,11 +170,16 @@ public class AuthController {
 	}
 
 	@GetMapping("/token/validate-and-refresh")
-	public AuthResponseDTO validateAndRefresh(@CookieValue("accessToken") String accessToken,
-			@CookieValue("refreshToken") String refreshToken,
+	public AuthResponseDTO validateAndRefresh(@CookieValue(value = "accessToken", required = false) String accessToken,
+			@CookieValue(value = "refreshToken", required = false) String refreshToken,
 			HttpServletResponse response) {
 		System.out.println(accessToken);
 		System.out.println(refreshToken);
+
+		if (accessToken == null && refreshToken == null) {
+			throw new UnauthorizedException("未登录，请先登录");
+		}
+
 		if (jwtUtils.validateToken(accessToken) && !jwtUtils.isTokenBlacklisted(accessToken)) {
 			return getUserByToken(accessToken);
 		} else {
