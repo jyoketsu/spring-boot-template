@@ -175,3 +175,6 @@ GET /recipes/list/search?name=面条&description=辣&ingredients=肉丝 青椒
 - [KaptchaConfig.java](src/main/java/com/example/demo/config/KaptchaConfig.java)
 - [CaptchaController.java](src/main/java/com/example/demo/controller/CaptchaController.java)
 - [AuthController](src/main/java/com/example/demo/controller/AuthController.java)
+
+## Actions
+- [main.yml](./.github/workflows/main.yml)

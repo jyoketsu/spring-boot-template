@@ -31,3 +31,7 @@ build/
 
 ### VS Code ###
 .vscode/
+
+# GitHub Actions Keys
+github-actions-key
+github-actions-key.pub

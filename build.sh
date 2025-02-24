@@ -68,7 +68,7 @@ main() {
 	check_requirements
 	build_jar
 	build_docker_image
-	start_docker_compose
+	# start_docker_compose
 }
 
 # 执行主函数
