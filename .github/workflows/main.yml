@@ -1,9 +1,9 @@
 name: Build and Deploy
 
 on:
-  # push:
-    # branches:
-      # - main
+  push:
+    branches:
+      - main
   workflow_dispatch: # 手动触发
 
 jobs:
@@ -11,46 +11,46 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v3
+      - name: Checkout code
+        uses: actions/checkout@v3
 
-    - name: Set up JDK 17
-      uses: actions/setup-java@v3
-      with:
-        java-version: '17'
-        distribution: 'temurin'
+      - name: Set up JDK 17
+        uses: actions/setup-java@v3
+        with:
+          java-version: "17"
+          distribution: "temurin"
 
-    - name: Build with Maven
-      run: mvn clean package -DskipTests
+      - name: Build with Maven
+        run: mvn clean package -DskipTests
 
-    - name: Build Docker image
-      run: docker build -t demo-app:latest .
+      - name: Build Docker image
+        run: docker build -t demo-app:latest .
 
-    - name: Save Docker image
-      # run: docker save -o demo-app.tar demo-app:latest
-      run: docker save demo-app:latest | gzip > demo-app.tar.gz
+      - name: Save Docker image
+        # run: docker save -o demo-app.tar demo-app:latest
+        run: docker save demo-app:latest | gzip > demo-app.tar.gz
 
-    - name: Install SSH key
-      uses: shimataro/ssh-key-action@v2
-      with:
-        key: ${{ secrets.SSH_PRIVATE_KEY }}
-        known_hosts: ${{ secrets.KNOWN_HOSTS }}
+      - name: Install SSH key
+        uses: shimataro/ssh-key-action@v2
+        with:
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          known_hosts: ${{ secrets.KNOWN_HOSTS }}
 
-    - name: Copy files to server
-      run: |
-        scp -P 2222 demo-app.tar.gz root@xujie.i234.me:/data/docker-images/
-        scp -P 2222 docker-compose.yml root@xujie.i234.me:/data/projects/spring-boot-template/
-        scp -P 2222 backup.sh restore.sh root@xujie.i234.me:/data/projects/spring-boot-template/ && ssh -p 2222 root@xujie.i234.me "chmod +x /data/projects/spring-boot-template/{backup,restore}.sh"
-        
-    - name: Load image and restart services
-      run: |
-        ssh -p 2222 root@xujie.i234.me << EOF
-          cd /data/docker-images/
-          gzip -d demo-app.tar.gz
-          docker load -i demo-app.tar
-          cd /data/projects/spring-boot-template/
-          docker-compose down
-          docker-compose up -d
-          docker image prune -f  # 清理无用镜像
-          rm -f vue3-template.tar  # 新增清理tar文件
-        EOF
+      - name: Copy files to server
+        run: |
+          scp -P 2222 demo-app.tar.gz root@xujie.i234.me:/data/docker-images/
+          scp -P 2222 docker-compose.yml root@xujie.i234.me:/data/projects/spring-boot-template/
+          scp -P 2222 backup.sh restore.sh root@xujie.i234.me:/data/projects/spring-boot-template/ && ssh -p 2222 root@xujie.i234.me "chmod +x /data/projects/spring-boot-template/{backup,restore}.sh"
+
+      - name: Load image and restart services
+        run: |
+          ssh -p 2222 root@xujie.i234.me << EOF
+            cd /data/docker-images/
+            gzip -d demo-app.tar.gz
+            docker load -i demo-app.tar
+            cd /data/projects/spring-boot-template/
+            docker-compose down
+            docker-compose up -d
+            docker image prune -f  # 清理无用镜像
+            rm -f vue3-template.tar  # 新增清理tar文件
+          EOF
