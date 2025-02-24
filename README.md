@@ -178,3 +178,9 @@ GET /recipes/list/search?name=面条&description=辣&ingredients=肉丝 青椒
 
 ## Actions
 - [main.yml](./.github/workflows/main.yml)
+
+## 备份数据库
+- [backup.sh](./backup.sh)
+
+## 恢复数据库
+- [restore.sh](./restore.sh)

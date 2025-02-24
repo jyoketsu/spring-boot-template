@@ -1,6 +1,7 @@
 services:
   mysql:
     image: 'mysql:latest'
+    container_name: spring-boot-template-mysql
     environment:
       - 'MYSQL_DATABASE=mydatabase'
       - 'MYSQL_PASSWORD=secret'
