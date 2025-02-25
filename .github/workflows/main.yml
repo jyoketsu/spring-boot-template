@@ -38,17 +38,17 @@ jobs:
 
       - name: Copy files to server
         run: |
-          scp -P 2222 demo-app.tar.gz root@xujie.i234.me:/data/docker-images/
-          scp -P 2222 docker-compose.yml root@xujie.i234.me:/data/projects/spring-boot-template/
-          scp -P 2222 backup.sh restore.sh root@xujie.i234.me:/data/projects/spring-boot-template/ && ssh -p 2222 root@xujie.i234.me "chmod +x /data/projects/spring-boot-template/{backup,restore}.sh"
+          scp demo-app.tar.gz root@47.102.193.24:/home/docker-images/
+          scp docker-compose.yml root@47.102.193.24:/home/projects/spring-boot-template/
+          scp backup.sh restore.sh root@47.102.193.24:/home/projects/spring-boot-template/ && ssh root@47.102.193.24 "chmod +x /home/projects/spring-boot-template/{backup,restore}.sh"
 
       - name: Load image and restart services
         run: |
-          ssh -p 2222 root@xujie.i234.me << EOF
-            cd /data/docker-images/
+          ssh root@47.102.193.24 << EOF
+            cd /home/docker-images/
             gzip -d demo-app.tar.gz
             docker load -i demo-app.tar
-            cd /data/projects/spring-boot-template/
+            cd /home/projects/spring-boot-template/
             docker-compose down
             docker-compose up -d
             docker image prune -f  # 清理无用镜像
