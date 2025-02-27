@@ -10,50 +10,36 @@ services:
       - 'TZ=Asia/Shanghai'
       - 'MYSQL_CHARACTER_SET_SERVER=utf8mb4'
       - 'MYSQL_COLLATION_SERVER=utf8mb4_unicode_ci'
-    ports:
-      - '3306:3306'
+    # ports:
+    #   - '3306:3306'
     volumes:
       - mysql_data:/var/lib/mysql # 使用命名卷挂载 MySQL 数据目录
     restart: unless-stopped
-    networks:
-      - xujie-public-net
 
   redis:
     image: 'redis:latest'
-    ports:
-      - '6379:6379'
+    # ports:
+    #   - '6379:6379'
     restart: unless-stopped
-    networks:
-      - xujie-public-net
 
   spring-boot-template:
     image: demo-app:latest
-    ports:
-      - "8080:8080"
+    # ports:
+    #   - "8080:8080"
     restart: unless-stopped
     depends_on:
       - mysql
     environment:
       - DB_HOST=mysql
       - REDIS_HOST=redis
-    networks:
-      - xujie-public-net
 
   vue3-template:
     image: vue3-template:latest
-    expose:
-      - 80
-    # ports:
-    #   - "5173:80"
+    ports:
+      - "5173:80"
     restart: unless-stopped
     depends_on:
       - spring-boot-template
-    networks:
-      - xujie-public-net
+
 volumes:
   mysql_data: {} # 声明命名卷
-
-networks:
-  xujie-public-net:
-    driver: bridge
-    external: true

@@ -46,8 +46,8 @@ jobs:
             gzip -d demo-app.tar.gz
             docker load -i demo-app.tar
             cd /home/projects/spring-boot-template/
-            docker-compose down
-            docker-compose up -d
+            docker compose down
+            docker compose up -d
             docker image prune -f  # 清理无用镜像
             rm -f vue3-template.tar  # 新增清理tar文件
           EOF
