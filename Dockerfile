@@ -1,5 +1,8 @@
 # 使用官方 Java 运行时基础镜像
-FROM openjdk:17-jdk-slim
+# FROM openjdk:17-jdk-slim
+
+# 使用更小的JRE基础镜像
+FROM eclipse-temurin:17-jre-alpine
 
 # 安装字体库
 RUN apt-get update && apt-get install -y fontconfig fonts-dejavu
