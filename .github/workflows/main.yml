@@ -48,13 +48,11 @@ jobs:
       - name: Load image and restart services
         run: |
           ssh root@47.102.193.24 << EOF
-            cd /home/projects/spring-boot-template/
-            docker compose down
             cd /home/docker-images/
-            docker rmi demo-app:latest || true  # 强制删除旧镜像（如有）
             gzip -d demo-app.tar.gz
             docker load -i demo-app.tar
             cd /home/projects/spring-boot-template/
+            docker compose down
             docker compose up -d
             docker image prune -f  # 清理无用镜像
             rm -f vue3-template.tar  # 新增清理tar文件
