@@ -20,6 +20,12 @@ jobs:
       - name: Build with Maven
         run: mvn clean package -DskipTests
 
+      - name: Verify build output
+        run: |
+          echo "Generated JAR files:"
+          ls -l target/*.jar
+          test -f target/demo-*.jar || (echo "JAR文件未生成！"; exit 1)
+
       - name: Build Docker image
         run: docker build -t demo-app:latest .
 

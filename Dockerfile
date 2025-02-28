@@ -11,7 +11,7 @@ RUN apt-get update && apt-get install -y fontconfig fonts-dejavu
 WORKDIR /app
 
 # 将应用的 JAR 包复制到镜像中
-COPY target/demo-0.0.1-SNAPSHOT.jar app.jar
+COPY target/demo-*.jar app.jar
 
 # 暴露端口（根据项目中的应用端口）
 EXPOSE 8080

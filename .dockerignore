@@ -2,11 +2,6 @@
 .git/
 .github/
 
-# 构建输出
-target/
-build/
-bin/
-
 # IDE相关
 .idea/
 .vscode/
