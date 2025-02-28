@@ -1,0 +1,40 @@
+# 版本控制
+.git/
+.github/
+
+# 构建输出
+target/
+build/
+bin/
+
+# IDE相关
+.idea/
+.vscode/
+*.iml
+
+# 日志文件
+*.log
+logs/
+
+# 开发脚本
+backup.sh
+restore.sh
+build.sh
+
+# 测试相关
+**/test/
+
+# 文档文件
+*.md
+LICENSE
+
+# 临时文件
+tmp/
+temp/
+
+# Docker 相关
+docker-compose*.yml
+docker-compose.yml
+compose.yml
+.dockerignore
+Dockerfile
