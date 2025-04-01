@@ -33,13 +33,11 @@ services:
       - DB_HOST=mysql
       - REDIS_HOST=redis
 
-  vue3-template:
-    image: vue3-template:latest
-    ports:
-      - "5173:80"
-    restart: unless-stopped
-    depends_on:
-      - spring-boot-template
-
 volumes:
   mysql_data: {} # 声明命名卷
+
+# 加入到后端网络，docker network ls 查看
+networks:
+  xujie_template_default:
+    # 网络名称
+    external: true # 外部网络，表示使用已存在的 Docker 网络，需提前创建 docker network create xujie_template_default
