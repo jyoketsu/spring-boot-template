@@ -55,5 +55,7 @@ jobs:
             docker compose down
             docker compose up -d
             docker image prune -f  # 清理无用镜像
-            rm -f vue3-template.tar  # 新增清理tar文件
+            rm -f /home/docker-images/demo-app.tar  # 新增清理tar文件
+            rm -f /home/docker-images/demo-app.tar.gz  # 新增清理tar.gz文件
+            echo "部署完成！"
           EOF
