@@ -29,11 +29,6 @@ build/
 !**/src/main/**/build/
 !**/src/test/**/build/
 
-### VS Code ###
-.vscode/
-
 # GitHub Actions Keys
 github-actions-key
 github-actions-key.pub
-
-/mysql_backups/
