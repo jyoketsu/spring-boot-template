@@ -4,19 +4,23 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+import com.example.demo.handler.CustomAccessDeniedHandler;
 import com.example.demo.util.JwtAuthenticationFilter;
 
 @Configuration
 // 启用 Spring Security
 @EnableWebSecurity
+@EnableMethodSecurity(prePostEnabled = true) // 启用方法级别的安全配置
 public class SecurityConfig {
 
 	@Bean
@@ -30,6 +34,10 @@ public class SecurityConfig {
 				.csrf(csrf -> csrf.disable())
 				// 无状态，使用 JWT
 				.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+				// 异常处理配置
+				.exceptionHandling(exception -> exception
+						.accessDeniedHandler(accessDeniedHandler())) // 处理访问被拒绝的情况
+				// 配置请求的权限
 				.authorizeHttpRequests(auth -> auth
 						// 放行的接口（无需登录）
 						.requestMatchers(
@@ -70,5 +78,11 @@ public class SecurityConfig {
 	@Bean
 	public JwtAuthenticationFilter jwtAuthenticationFilter() {
 		return new JwtAuthenticationFilter();
+	}
+
+	// 访问拒绝处理器Bean
+	@Bean
+	public AccessDeniedHandler accessDeniedHandler() {
+		return new CustomAccessDeniedHandler();
 	}
 }

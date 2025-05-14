@@ -4,6 +4,7 @@ import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
@@ -14,6 +15,10 @@ public class GlobalExceptionHandler {
 
 	@ExceptionHandler(Exception.class)
 	public ResponseEntity<ApiResponse<Void>> handleException(Exception e) {
+		// 排除Spring Security的权限异常
+		if (e instanceof AccessDeniedException) {
+			throw (AccessDeniedException) e; // 重新抛出让Security的处理器处理
+		}
 		// 打印异常日志
 		e.printStackTrace();
 		ApiResponse<Void> response = ApiResponse.error(500, "Internal Server Error: " + e.getMessage());
@@ -31,7 +36,6 @@ public class GlobalExceptionHandler {
 		ApiResponse<Void> response = ApiResponse.error(401, e.getMessage());
 		return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
 	}
-
 
 	@ExceptionHandler(ForbiddenException.class)
 	public ResponseEntity<ApiResponse<Void>> handleForbidden(ForbiddenException e) {

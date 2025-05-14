@@ -177,10 +177,8 @@ public class AuthController {
 	 */
 	@GetMapping
 	public AuthResponseDTO getUserByToken(@RequestHeader("Authorization") String authorizationHeader) {
-		System.out.println(authorizationHeader);
 		// 从Header中提取Bearer token
 		String token = authorizationHeader.replace("Bearer ", "");
-		System.out.println(token);
 		// 从令牌中获取用户名
 		String username = jwtUtils.getUsernameFromToken(token);
 		// 根据用户名查找用户

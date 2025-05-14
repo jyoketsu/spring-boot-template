@@ -155,6 +155,14 @@ GET /recipes/list/search?name=面条&description=辣&ingredients=肉丝 青椒
 - [AuthService](src/main/java/com/example/demo/service/AuthServiceImpl.java)
 - [AuthController](src/main/java/com/example/demo/controller/AuthController.java)
 
+## 角色权限
+- [JwtAuthenticationFilter](src/main/java/com/example/demo/util/JwtAuthenticationFilter.java)
+- [SecurityConfig](src/main/java/com/example/demo/config/SecurityConfig.java) 
+  - 启用方法级别的安全配置：`@EnableMethodSecurity(prePostEnabled = true)`
+  - 添加异常处理配置
+- [DictionaryController](src/main/java/com/example/demo/controller/DictionaryController.java) `@PreAuthorize("hasRole('ADMIN')")`
+
+
 ## 密码加密存储：BCrypt
 
 - [SecurityConfig](src/main/java/com/example/demo/config/SecurityConfig.java)

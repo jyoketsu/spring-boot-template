@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -70,16 +71,19 @@ public class RecipeController {
 	}
 
 	@DeleteMapping("/{id}")
+	@PreAuthorize("hasRole('ADMIN')")
 	public void deleteRecipe(@PathVariable Long id) {
 		recipeService.deleteRecipe(id);
 	}
 
 	@DeleteMapping
+	@PreAuthorize("hasRole('ADMIN')")
 	public void deleteRecipes(@RequestBody List<Long> ids) {
 		recipeService.deleteRecipes(ids);
 	}
 
 	@PostMapping("/addIngredient")
+	@PreAuthorize("hasRole('ADMIN')")
 	public RecipeIngredient addIngredient2Recipe(@RequestBody AddIngredientDTO addIngredientDto) {
 		return recipeService.addIngredient2Recipe(
 				addIngredientDto.getRecipeId(),
@@ -88,17 +92,20 @@ public class RecipeController {
 	}
 
 	@DeleteMapping("/removeIngredient/{recipeId}/{ingredientId}")
+	@PreAuthorize("hasRole('ADMIN')")
 	public void removeIngredientFromRecipe(@PathVariable Long recipeId,
 			@PathVariable Long ingredientId) {
 		recipeService.deleteIngredientFromRecipe(recipeId, ingredientId);
 	}
 
 	@PostMapping
+	@PreAuthorize("hasRole('ADMIN')")
 	public Recipe addRecipeWithIngredients(@RequestBody RecipeDTO recipeDto) {
 		return recipeService.createRecipeWithIngredients(recipeDto);
 	}
 
 	@PutMapping
+	@PreAuthorize("hasRole('ADMIN')")
 	public Recipe editRecipeWithIngredients(@RequestBody RecipeDTO recipeDto) {
 		return recipeService.editRecipeWithIngredients(recipeDto);
 	}

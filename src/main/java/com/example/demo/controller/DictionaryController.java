@@ -10,6 +10,7 @@ import com.example.demo.service.DictionaryService;
 
 import java.util.List;
 
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -46,21 +47,25 @@ public class DictionaryController {
 	}
 
 	@PostMapping
+	@PreAuthorize("hasRole('ADMIN')")
 	public Dictionary addDictionary(@RequestBody Dictionary dictionary) {
 		return dictionaryService.createDictionary(dictionary);
 	}
 
 	@PutMapping
+	@PreAuthorize("hasRole('ADMIN')")
 	public Dictionary updateDictionary(@RequestBody Dictionary dictionary) {
 		return dictionaryService.updateDictionary(dictionary);
 	}
 
 	@DeleteMapping("/{id}")
+	@PreAuthorize("hasRole('ADMIN')")
 	public void deleteDictionary(@PathVariable Long id) {
 		dictionaryService.deleteDictionary(id);
 	}
 
 	@DeleteMapping
+	@PreAuthorize("hasRole('ADMIN')")
 	public void deleteDictionaries(@RequestBody List<Long> ids) {
 		dictionaryService.deleteDictionaries(ids);
 	}

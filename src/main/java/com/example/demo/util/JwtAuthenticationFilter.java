@@ -41,10 +41,15 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
 			// 从数据库中获取用户信息
 			UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+
 			// 设置权限
-			UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails, null,
+			UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
+					userDetails,
+					null,
+					// 获取用户所有权限 管理员：[ROLE_ADMIN]
 					userDetails.getAuthorities());
-			// 设置SecurityContext
+
+			// 设置SecurityContext（存储权限上下文）
 			SecurityContextHolder.getContext().setAuthentication(authentication);
 		}
 
