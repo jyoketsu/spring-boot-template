@@ -28,8 +28,9 @@ services:
 
   spring-boot-template:
     image: demo-app:latest
-    # ports:
-    #   - "8080:8080"
+    # 因为要外部访问swagger，所以需要映射端口。正常情况下，不需要映射端口，直接使用容器内部的端口即可。
+    ports:
+      - "8080:8080"
     restart: unless-stopped
     depends_on:
       - mysql

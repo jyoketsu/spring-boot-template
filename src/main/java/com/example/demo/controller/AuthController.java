@@ -14,6 +14,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.example.demo.dto.auth.AuthRequestDTO;
 import com.example.demo.dto.auth.AuthResponseDTO;
 import com.example.demo.dto.auth.ChangePasswordDTO;
+import com.example.demo.dto.auth.LogoutRequestDTO;
+import com.example.demo.dto.auth.RefreshTokenRequestDTO;
 import com.example.demo.dto.auth.UpdateUserDTO;
 import com.example.demo.exception.UnauthorizedException;
 import com.example.demo.model.User;
@@ -21,16 +23,15 @@ import com.example.demo.service.AuthService;
 import com.example.demo.service.CustomUserDetailsService;
 import com.example.demo.util.JwtUtils;
 
-import jakarta.servlet.http.Cookie;
+// import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.CookieValue;
+// import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.PutMapping;
 
 /**
@@ -98,22 +99,22 @@ public class AuthController {
 			String accessToken = jwtUtils.generateAccessToken(userDetails);
 			String refreshToken = jwtUtils.generateRefreshToken(userDetails);
 
-			// 设置 HttpOnly 和 Secure 属性的 Cookie
-			Cookie accessTokenCookie = new Cookie("accessToken", accessToken);
-			accessTokenCookie.setHttpOnly(true);
-			accessTokenCookie.setSecure(false);
-			accessTokenCookie.setPath("/");
-			accessTokenCookie.setMaxAge(7200); // 2小时
+			// // 设置 HttpOnly 和 Secure 属性的 Cookie
+			// Cookie accessTokenCookie = new Cookie("accessToken", accessToken);
+			// accessTokenCookie.setHttpOnly(true);
+			// accessTokenCookie.setSecure(false);
+			// accessTokenCookie.setPath("/");
+			// accessTokenCookie.setMaxAge(7200); // 2小时
 
-			Cookie refreshTokenCookie = new Cookie("refreshToken", refreshToken);
-			refreshTokenCookie.setHttpOnly(true);
-			refreshTokenCookie.setSecure(false);
-			// refreshTokenCookie 只有在访问 /api/auth/refresh 路径时才会被发送
-			refreshTokenCookie.setPath("/api/auth/token");
-			refreshTokenCookie.setMaxAge(604800); // 7天
+			// Cookie refreshTokenCookie = new Cookie("refreshToken", refreshToken);
+			// refreshTokenCookie.setHttpOnly(true);
+			// refreshTokenCookie.setSecure(false);
+			// // refreshTokenCookie 只有在访问 /api/auth/refresh 路径时才会被发送
+			// refreshTokenCookie.setPath("/api/auth/token");
+			// refreshTokenCookie.setMaxAge(604800); // 7天
 
-			response.addCookie(accessTokenCookie);
-			response.addCookie(refreshTokenCookie);
+			// response.addCookie(accessTokenCookie);
+			// response.addCookie(refreshTokenCookie);
 
 			// 获取用户名并查找用户
 			String username = userDetails.getUsername();
@@ -122,15 +123,21 @@ public class AuthController {
 			return new AuthResponseDTO()
 					.setUsername(username)
 					.setRole(user.getRole())
-					.setAvatar(user.getAvatar());
+					.setAvatar(user.getAvatar())
+					.setAccessToken(accessToken)
+					.setRefreshToken(refreshToken);
 		} catch (BadCredentialsException e) {
 			throw new RuntimeException("Invalid username or password");
 		}
 	}
 
 	@PostMapping("/token/refresh")
-	public AuthResponseDTO refresh(@CookieValue("refreshToken") String refreshToken, HttpServletResponse response) {
-		if (!jwtUtils.validateToken(refreshToken) || jwtUtils.isTokenBlacklisted(refreshToken)) {
+	public AuthResponseDTO refresh(@RequestBody @Valid RefreshTokenRequestDTO request, HttpServletResponse response) {
+		String refreshToken = request.getRefreshToken();
+		// 验证令牌有效性
+		if (!jwtUtils.validateToken(refreshToken) ||
+				jwtUtils.isTokenBlacklisted(refreshToken) ||
+				!jwtUtils.isRefreshToken(refreshToken)) {
 			throw new UnauthorizedException("Invalid refresh token");
 		}
 
@@ -144,51 +151,16 @@ public class AuthController {
 		String newAccessToken = jwtUtils.generateAccessToken(userDetails);
 		String newRefreshToken = jwtUtils.generateRefreshToken(userDetails);
 
-		// 设置 HttpOnly 和 Secure 属性的 Cookie
-		Cookie accessTokenCookie = new Cookie("accessToken", newAccessToken);
-		accessTokenCookie.setHttpOnly(true);
-		accessTokenCookie.setSecure(false);
-		accessTokenCookie.setPath("/");
-		accessTokenCookie.setMaxAge(7200); // 2小时
-
-		Cookie refreshTokenCookie = new Cookie("refreshToken", newRefreshToken);
-		refreshTokenCookie.setHttpOnly(true);
-		refreshTokenCookie.setSecure(false);
-		refreshTokenCookie.setPath("/api/auth/token");
-		refreshTokenCookie.setMaxAge(604800); // 7天
-
-		response.addCookie(accessTokenCookie);
-		response.addCookie(refreshTokenCookie);
-
-		User user = authService.findByUsername(username)
-				.orElseThrow(() -> new RuntimeException("User not found"));
-
 		return new AuthResponseDTO()
-				.setUsername(user.getUsername())
-				.setRole(user.getRole())
-				.setAvatar(user.getAvatar());
-	}
-
-	@GetMapping("/token/validate-and-refresh")
-	public AuthResponseDTO validateAndRefresh(@CookieValue(value = "accessToken", required = false) String accessToken,
-			@CookieValue(value = "refreshToken", required = false) String refreshToken,
-			HttpServletResponse response) {
-		System.out.println(accessToken);
-		System.out.println(refreshToken);
-
-		if (accessToken == null && refreshToken == null) {
-			throw new UnauthorizedException("未登录，请先登录");
-		}
-
-		if (jwtUtils.validateToken(accessToken) && !jwtUtils.isTokenBlacklisted(accessToken)) {
-			return getUserByToken(accessToken);
-		} else {
-			return refresh(refreshToken, response);
-		}
+				.setAccessToken(newAccessToken)
+				.setRefreshToken(newRefreshToken);
 	}
 
 	@PostMapping("/token/logout")
-	public void logout(@CookieValue("accessToken") String accessToken, @CookieValue("refreshToken") String refreshToken) {
+	public void logout(@RequestBody @Valid LogoutRequestDTO request) {
+		String accessToken = request.getAccessToken();
+		String refreshToken = request.getRefreshToken();
+
 		if (accessToken != null) {
 			jwtUtils.addToBlacklist(accessToken);
 		}
@@ -200,11 +172,15 @@ public class AuthController {
 	/**
 	 * 根据令牌获取用户信息
 	 * 
-	 * @param token JWT令牌
+	 * @param Authorization JWT令牌
 	 * @return 认证响应数据
 	 */
 	@GetMapping
-	public AuthResponseDTO getUserByToken(@RequestParam String token) {
+	public AuthResponseDTO getUserByToken(@RequestHeader("Authorization") String authorizationHeader) {
+		System.out.println(authorizationHeader);
+		// 从Header中提取Bearer token
+		String token = authorizationHeader.replace("Bearer ", "");
+		System.out.println(token);
 		// 从令牌中获取用户名
 		String username = jwtUtils.getUsernameFromToken(token);
 		// 根据用户名查找用户

@@ -94,4 +94,27 @@ public class JwtUtils {
 		Claims claims = Jwts.parser().verifyWith(key).build().parseSignedClaims(token).getPayload();
 		return claims.getExpiration();
 	}
+
+	/**
+	 * 判断是否是refresh token
+	 * 
+	 * @param token
+	 * @return
+	 */
+	public boolean isRefreshToken(String token) {
+		try {
+			Claims claims = Jwts.parser()
+					.verifyWith(key)
+					.build()
+					.parseSignedClaims(token)
+					.getPayload();
+
+			// 通过过期时间判断是否是refresh token（根据业务逻辑调整）
+			long expiration = claims.getExpiration().getTime();
+			long current = System.currentTimeMillis();
+			return (expiration - current) > accessTokenExpiration;
+		} catch (JwtException e) {
+			return false;
+		}
+	}
 }
