@@ -5,6 +5,7 @@ import org.springframework.core.annotation.Order;
 import org.springframework.data.domain.Page;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.HttpMessageConverter;
+import org.springframework.lang.Nullable;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice;
 
@@ -20,7 +21,7 @@ public class PageResponseBodyAdvice implements ResponseBodyAdvice<Object> {
 	}
 
 	@Override
-	public Object beforeBodyWrite(Object body, MethodParameter returnType, MediaType selectedContentType,
+	public Object beforeBodyWrite(@Nullable Object body, MethodParameter returnType, MediaType selectedContentType,
 			Class<? extends HttpMessageConverter<?>> selectedConverterType,
 			org.springframework.http.server.ServerHttpRequest request,
 			org.springframework.http.server.ServerHttpResponse response) {

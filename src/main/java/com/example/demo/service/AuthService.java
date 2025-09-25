@@ -9,6 +9,8 @@ import com.example.demo.model.User;
 public interface AuthService {
 	User register(AuthRequestDTO request);
 
+	User loginByWechat(String code);
+
 	Optional<User> findByUsername(String username);
 
 	User updateUser(UpdateUserDTO user);

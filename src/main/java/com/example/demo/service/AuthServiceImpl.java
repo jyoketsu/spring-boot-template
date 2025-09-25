@@ -5,9 +5,12 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
+import com.example.demo.config.WeChatProperties;
 import com.example.demo.dto.auth.AuthRequestDTO;
 import com.example.demo.dto.auth.UpdateUserDTO;
+import com.example.demo.dto.auth.WeChatSessionResponse;
 import com.example.demo.enums.Role;
 import com.example.demo.exception.ResourceNotFoundException;
 import com.example.demo.model.User;
@@ -21,6 +24,12 @@ public class AuthServiceImpl implements AuthService {
 
 	@Autowired
 	private PasswordEncoder passwordEncoder;
+
+	@Autowired
+	private RestTemplate restTemplate;
+
+	@Autowired
+	private WeChatProperties weChatProperties;
 
 	@Override
 	public User register(AuthRequestDTO request) {
@@ -39,6 +48,42 @@ public class AuthServiceImpl implements AuthService {
 		user.setRole(isFirstUser ? Role.ADMIN : Role.USER);
 
 		return userRepository.save(user);
+	}
+
+	@Override
+	public User loginByWechat(String code) {
+		String url = weChatProperties.getCodeToSessionUrl() + "?appid={appid}&secret={secret}&js_code={js_code}&grant_type={grant_type}";
+		WeChatSessionResponse response = restTemplate.getForObject(
+				url,
+				WeChatSessionResponse.class,
+				weChatProperties.getAppid(),
+				weChatProperties.getSecret(),
+				code,
+				weChatProperties.getGrantType());
+
+		if (response == null || response.getOpenid() == null) {
+			throw new RuntimeException("Failed to get openId from WeChat server");
+		}
+
+		String openId = response.getOpenid();
+
+		// 检查是否已有用户绑定该 openId
+		Optional<User> existingUser = userRepository.findByWechatOpenId(openId);
+		if (existingUser.isPresent()) {
+			return existingUser.get();
+		}
+
+		// 如果没有绑定，则创建一个新用户
+		User newUser = new User();
+		newUser.setUsername("wechat_user_" + System.currentTimeMillis());
+		newUser.setPassword(passwordEncoder.encode("123456")); // 设置一个默认密码，用户可以后续修改
+		newUser.setWechatOpenId(openId);
+
+		// 检查是否是第一个用户
+		boolean isFirstUser = userRepository.count() == 0;
+		newUser.setRole(isFirstUser ? Role.ADMIN : Role.USER);
+
+		return userRepository.save(newUser);
 	}
 
 	@Override

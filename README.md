@@ -192,3 +192,7 @@ GET /recipes/list/search?name=面条&description=辣&ingredients=肉丝 青椒
 
 ## 恢复数据库
 - [restore.sh](./restore.sh)
+
+## RestTemplate
+- [AuthServiceImpl.java](src/main/java/com/example/demo/service/AuthServiceImpl.java)
+  - loginByWechat

@@ -11,5 +11,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
 	Optional<User> findByUsername(String username);
 
+	Optional<User> findByWechatOpenId(String wechatOpenId);
+
 	long count();
 }

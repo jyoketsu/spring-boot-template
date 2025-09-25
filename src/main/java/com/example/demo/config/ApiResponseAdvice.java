@@ -6,6 +6,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.server.ServerHttpRequest;
 import org.springframework.http.server.ServerHttpResponse;
+import org.springframework.lang.Nullable;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.context.request.RequestAttributes;
@@ -33,7 +34,7 @@ public class ApiResponseAdvice implements ResponseBodyAdvice<Object> {
 
 	@SuppressWarnings("rawtypes")
 	@Override
-	public Object beforeBodyWrite(Object body, MethodParameter returnType, MediaType selectedContentType,
+	public Object beforeBodyWrite(@Nullable Object body, MethodParameter returnType, MediaType selectedContentType,
 			Class selectedConverterType, ServerHttpRequest request, ServerHttpResponse response) {
 
 		// 获取当前请求的 URI，判断是否为 Swagger 路径

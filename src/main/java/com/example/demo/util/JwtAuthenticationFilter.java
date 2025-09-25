@@ -8,7 +8,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-import com.example.demo.exception.UnauthorizedException;
 import com.example.demo.service.CustomUserDetailsService;
 
 import jakarta.servlet.FilterChain;

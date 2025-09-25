@@ -34,4 +34,7 @@ public class User extends BaseEntity {
 
 	@Column(name = "avatar", nullable = true)
 	private String avatar;
+
+	@Column(name = "wechat_open_id", nullable = true, unique = true)
+	private String wechatOpenId;
 }
