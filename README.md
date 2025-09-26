@@ -196,3 +196,13 @@ GET /recipes/list/search?name=面条&description=辣&ingredients=肉丝 青椒
 ## RestTemplate
 - [AuthServiceImpl.java](src/main/java/com/example/demo/service/AuthServiceImpl.java)
   - loginByWechat
+
+## Dotenv
+- [pom.xml](./pom.xml)
+- [DotenvConfig.java](src/main/java/com/example/demo/config/DotenvConfig.java)
+- [application.properties](src/main/resources/application.properties)
+
+## 生产环境环境变量配置
+- GitHub 仓库配置`Actions secrets`
+- [docker-compose.yml](./docker-compose.yml) 配置`environment`，这样，Spring Boot 就能通过 `application.properties` 读取环境变量。
+- 在[main.yml](./.github/workflows/main.yml)脚本中写入 .env 文件（docker-compose 会自动读取 .env 里的变量）。

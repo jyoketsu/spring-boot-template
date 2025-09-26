@@ -14,5 +14,6 @@
 			"name": "mysql",
 			"username": "myuser"
 		}
-	]
+	],
+	"java.configuration.updateBuildConfiguration": "interactive"
 }

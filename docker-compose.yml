@@ -37,6 +37,9 @@ services:
     environment:
       - DB_HOST=mysql
       - REDIS_HOST=redis
+      - WECHAT_APPID=${WECHAT_APPID}
+      - WECHAT_SECRET=${WECHAT_SECRET}
+      - WECHAT_GRANT_TYPE=${WECHAT_GRANT_TYPE}
     networks:
       - xujie_template_default
 

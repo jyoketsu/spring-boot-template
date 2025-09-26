@@ -32,3 +32,5 @@ build/
 # GitHub Actions Keys
 github-actions-key
 github-actions-key.pub
+
+.env

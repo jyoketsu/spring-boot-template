@@ -60,6 +60,8 @@ public class AuthServiceImpl implements AuthService {
 				weChatProperties.getSecret(),
 				code,
 				weChatProperties.getGrantType());
+		
+		System.out.println("WeChatSessionResponse: " + response);
 
 		if (response == null || response.getOpenid() == null) {
 			throw new RuntimeException("Failed to get openId from WeChat server");
