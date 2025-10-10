@@ -14,6 +14,8 @@ public class RecipeListDTO {
 	private String name;
 	private String description;
 	private String ingredients;
+	private Long dishId;
+	private String dishName;
 	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
 	private LocalDateTime updateTime;
 }

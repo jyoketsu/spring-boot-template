@@ -3,6 +3,7 @@ package com.example.demo.service;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +21,7 @@ import com.example.demo.dto.recipe.RecipeProjection;
 import com.example.demo.dto.recipe.RecipeResDTO;
 import com.example.demo.dto.recipe.RecipeSummaryDTO;
 import com.example.demo.exception.ResourceNotFoundException;
+import com.example.demo.model.Dish;
 import com.example.demo.model.Ingredient;
 import com.example.demo.model.Recipe;
 import com.example.demo.model.RecipeIngredient;
@@ -146,6 +148,12 @@ public class RecipeServiceImpl implements RecipeService {
 		recipe.setName(recipeDTO.getName());
 		recipe.setDescription(recipeDTO.getDescription());
 		recipe.setContent(recipeDTO.getContent());
+
+		// 关联 dish
+		Dish dish = new Dish();
+		dish.setId(recipeDTO.getDishId());
+		recipe.setDish(dish);
+
 		Recipe createdRecipe = recipeRepository.save(recipe);
 
 		// 获取 ingredients
@@ -185,6 +193,11 @@ public class RecipeServiceImpl implements RecipeService {
 		existingRecipe.setName(recipeDTO.getName());
 		existingRecipe.setDescription(recipeDTO.getDescription());
 		existingRecipe.setContent(recipeDTO.getContent());
+
+		Dish dish = new Dish();
+		dish.setId(recipeDTO.getDishId());
+		existingRecipe.setDish(dish);
+
 		// 保存更新后的 Recipe
 		Recipe savedRecipe = recipeRepository.save(existingRecipe);
 
@@ -219,9 +232,16 @@ public class RecipeServiceImpl implements RecipeService {
 		dto.setName(recipe.getName());
 		dto.setDescription(recipe.getDescription());
 		dto.setUpdateTime(recipe.getUpdateTime());
+
 		dto.setIngredients(recipe.getRecipeIngredients().stream()
 				.map(ri -> ri.getIngredient().getName())
 				.collect(Collectors.joining(",")));
+
+		Optional.ofNullable(recipe.getDish()).ifPresent(dish -> {
+			dto.setDishId(dish.getId());
+			dto.setDishName(dish.getName());
+		});
+
 		return dto;
 	}
 

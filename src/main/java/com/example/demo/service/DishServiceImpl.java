@@ -42,7 +42,7 @@ public class DishServiceImpl implements DishService {
 		DishListDTO dto = new DishListDTO();
 		dto.setId(dish.getId());
 		dto.setName(dish.getName());
-		dto.setCategoryId(dish.getCategory().getId().toString());
+		dto.setCategoryId(dish.getCategory().getId());
 		dto.setCategoryName(dish.getCategory().getName());
 		return dto;
 	}
@@ -63,14 +63,20 @@ public class DishServiceImpl implements DishService {
 
 	@Override
 	public Dish updateDish(DishBodyDTO dishBodyDTO) {
-		Dictionary category = new Dictionary();
-		category.setId(dishBodyDTO.getCategoryId());
 		return dishRepository.findById(dishBodyDTO.getId())
 				.map(existingDish -> {
 					existingDish.setName(dishBodyDTO.getName());
 					existingDish.setDescription(dishBodyDTO.getDescription());
-					existingDish.setCover(dishBodyDTO.getCover());
-					existingDish.setCategory(category);
+					if (dishBodyDTO.getCover() != null) {
+						existingDish.setCover(dishBodyDTO.getCover());
+					}
+
+					if (dishBodyDTO.getCategoryId() != null) {
+						Dictionary category = new Dictionary();
+						category.setId(dishBodyDTO.getCategoryId());
+						existingDish.setCategory(category);
+					}
+
 					Dish updatedDish = dishRepository.save(existingDish);
 					return updatedDish;
 				})

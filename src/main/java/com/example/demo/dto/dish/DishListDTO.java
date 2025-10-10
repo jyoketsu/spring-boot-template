@@ -14,7 +14,7 @@ public class DishListDTO {
 	private String name;
 	private String description;
 	private String cover;
-	private String categoryId;
+	private Long categoryId;
 	private String categoryName;
 	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
 	private LocalDateTime updateTime;

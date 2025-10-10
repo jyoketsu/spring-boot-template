@@ -14,4 +14,5 @@ public class RecipeDTO {
 	private String content;
 	// Map: Key 为 Ingredient ID, Value 为数量
 	private Map<Long, Double> ingredients;
+	private Long dishId;
 }
