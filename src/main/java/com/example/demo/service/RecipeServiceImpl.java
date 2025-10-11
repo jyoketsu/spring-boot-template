@@ -44,14 +44,22 @@ public class RecipeServiceImpl implements RecipeService {
 	private RecipeIngredientRepository recipeIngredientRepository;
 
 	@Override
-	public Page<RecipeListDTO> getAllRecipes(String name, String description, String ingredientNames, int page,
+	public Page<RecipeListDTO> getAllRecipes(
+			String name,
+			String description,
+			String ingredientNames,
+			String dishName,
+			Long dishId,
+			int page,
 			int size) {
 		// 通过 Specification 构造查询条件
 		Specification<Recipe> spec = Specification
 				.where(RecipeSpecification.hasName(name))
 				.and(RecipeSpecification.hasDescription(description))
 				.and(RecipeSpecification.hasIngredients(
-						ingredientNames != null ? Arrays.asList(ingredientNames.split("\\s+")) : null));
+						ingredientNames != null ? Arrays.asList(ingredientNames.split("\\s+")) : null))
+				.and(RecipeSpecification.hasDishName(dishName))
+				.and(RecipeSpecification.hasDishId(dishId));
 
 		// 分页请求
 		PageRequest pageable = PageRequest.of(page, size);

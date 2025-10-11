@@ -42,9 +42,19 @@ public class DishServiceImpl implements DishService {
 		DishListDTO dto = new DishListDTO();
 		dto.setId(dish.getId());
 		dto.setName(dish.getName());
+		dto.setDescription(dish.getDescription());
+		dto.setCover(dish.getCover());
+		dto.setUpdateTime(dish.getUpdateTime());
 		dto.setCategoryId(dish.getCategory().getId());
 		dto.setCategoryName(dish.getCategory().getName());
 		return dto;
+	}
+
+	@Override
+	public DishListDTO getDishById(Long id) {
+		Dish dish = dishRepository.findById(id)
+				.orElseThrow(() -> new ResourceNotFoundException("dish not found with id " + id));
+		return convertToListDTO(dish);
 	}
 
 	@Override

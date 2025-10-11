@@ -11,6 +11,8 @@ import com.example.demo.model.Dish;
 public interface DishService {
 	Page<DishListDTO> getAllDishes(String name, Long categoryId, Integer page, Integer size);
 
+	DishListDTO getDishById(Long id);
+
 	Dish createDish(DishBodyDTO dishBodyDTO);
 
 	Dish updateDish(DishBodyDTO dishBodyDTO);

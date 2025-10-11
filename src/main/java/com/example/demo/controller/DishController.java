@@ -38,6 +38,11 @@ public class DishController {
 		return dishService.getAllDishes(name, categoryId, page, size);
 	}
 
+	@GetMapping("/{id}")
+	public DishListDTO getIngredientById(@PathVariable Long id) {
+		return dishService.getDishById(id);
+	}
+
 	@PostMapping
 	@PreAuthorize("hasRole('ADMIN')")
 	public Dish addDish(@RequestBody @Valid DishBodyDTO dishBodyDTO) {

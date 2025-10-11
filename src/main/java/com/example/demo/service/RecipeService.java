@@ -12,7 +12,8 @@ import com.example.demo.model.Recipe;
 import com.example.demo.model.RecipeIngredient;
 
 public interface RecipeService {
-	Page<RecipeListDTO> getAllRecipes(String name, String description, String ingredientNames, int page, int size);
+	Page<RecipeListDTO> getAllRecipes(String name, String description, String ingredientNames, String dishName,
+			Long dishId, int page, int size);
 
 	List<RecipeSummaryDTO> getAllWithSummaryUseJPQL();
 

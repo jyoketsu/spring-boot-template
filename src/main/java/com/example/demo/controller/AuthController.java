@@ -18,6 +18,7 @@ import com.example.demo.dto.auth.LogoutRequestDTO;
 import com.example.demo.dto.auth.RefreshTokenRequestDTO;
 import com.example.demo.dto.auth.UpdateUserDTO;
 import com.example.demo.dto.auth.WeChatLoginDTO;
+import com.example.demo.exception.ForbiddenException;
 import com.example.demo.exception.UnauthorizedException;
 import com.example.demo.model.User;
 import com.example.demo.service.AuthService;
@@ -139,7 +140,7 @@ public class AuthController {
 		if (!jwtUtils.validateToken(refreshToken) ||
 				jwtUtils.isTokenBlacklisted(refreshToken) ||
 				!jwtUtils.isRefreshToken(refreshToken)) {
-			throw new UnauthorizedException("Invalid refresh token");
+			throw new UnauthorizedException("登录已过期，请重新登录！");
 		}
 
 		// 将旧的 refresh token 加入黑名单
@@ -178,20 +179,24 @@ public class AuthController {
 	 */
 	@GetMapping
 	public AuthResponseDTO getUserByToken(@RequestHeader("Authorization") String authorizationHeader) {
-		// 从Header中提取Bearer token
-		String token = authorizationHeader.replace("Bearer ", "");
-		// 从令牌中获取用户名
-		String username = jwtUtils.getUsernameFromToken(token);
-		// 根据用户名查找用户
-		User user = authService.findByUsername(username).orElseThrow(() -> new RuntimeException("User not found"));
-		// 构建响应对象
-		AuthResponseDTO response = new AuthResponseDTO();
-		response
-				.setId(user.getId())
-				.setUsername(username)
-				.setRole(user.getRole())
-				.setAvatar(user.getAvatar());
-		return response;
+		try {
+			// 从Header中提取Bearer token
+			String token = authorizationHeader.replace("Bearer ", "");
+			// 从令牌中获取用户名
+			String username = jwtUtils.getUsernameFromToken(token);
+			// 根据用户名查找用户
+			User user = authService.findByUsername(username).orElseThrow(() -> new RuntimeException("User not found"));
+			// 构建响应对象
+			AuthResponseDTO response = new AuthResponseDTO();
+			response
+					.setId(user.getId())
+					.setUsername(username)
+					.setRole(user.getRole())
+					.setAvatar(user.getAvatar());
+			return response;
+		} catch (Exception e) {
+			throw new ForbiddenException("Invalid token");
+		}
 	}
 
 	/**
@@ -242,7 +247,7 @@ public class AuthController {
 	@PostMapping("/wechat/login")
 	public AuthResponseDTO loginByWechat(@RequestBody @Valid WeChatLoginDTO request) {
 		User user = authService.loginByWechat(request.getCode());
-		
+
 		UserDetails userDetails = userDetailsService.loadUserByUsername(user.getUsername());
 		String accessToken = jwtUtils.generateAccessToken(userDetails);
 		String refreshToken = jwtUtils.generateRefreshToken(userDetails);

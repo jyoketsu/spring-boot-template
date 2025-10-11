@@ -38,9 +38,11 @@ public class RecipeController {
 			@RequestParam(required = false) String name,
 			@RequestParam(required = false) String description,
 			@RequestParam(required = false) String ingredientNames,
+			@RequestParam(required = false) String dishName,
+			@RequestParam(required = false) Long dishId,
 			@RequestParam(defaultValue = "0") int page,
 			@RequestParam(defaultValue = "10") int size) {
-		return recipeService.getAllRecipes(name, description, ingredientNames, page, size);
+		return recipeService.getAllRecipes(name, description, ingredientNames, dishName, dishId, page, size);
 	}
 
 	@GetMapping("/list/JPQL")

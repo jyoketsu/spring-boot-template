@@ -2,6 +2,8 @@ package com.example.demo.repository;
 
 import com.example.demo.model.Recipe;
 import com.example.demo.model.RecipeIngredient;
+
+import io.micrometer.common.util.StringUtils;
 import jakarta.persistence.criteria.Join;
 import jakarta.persistence.criteria.Predicate;
 
@@ -55,5 +57,26 @@ public class RecipeSpecification {
 			 */
 			return criteriaBuilder.or(predicates.toArray(new Predicate[0]));
 		};
+	}
+
+	// 按菜品模糊查询
+	public static Specification<Recipe> hasDishName(String dishName) {
+		/**
+		 * dishName == null ? null 表示当dishName参数为null时，返回null（不添加查询条件）
+		 * 当dishName为空时，会过滤掉所有没有关联Dish的Recipe记录
+		 * 正确的做法应该是返回criteriaBuilder.conjunction()（恒真条件）
+		 * 当返回null时，Spring Data JPA会完全忽略这个查询条件，但关联查询会隐式添加INNER JOIN
+		 * 类似SELECT * FROM recipe r INNER JOIN dish d ON r.dish_id = d.id
+		 */
+		return (root, query, criteriaBuilder) -> StringUtils.isBlank(dishName)
+				? criteriaBuilder.conjunction()
+				: criteriaBuilder.like(root.get("dish").get("name"), "%" + dishName + "%");
+	}
+
+	// 按单位精确查询
+	public static Specification<Recipe> hasDishId(Long dishId) {
+		return (root, query, criteriaBuilder) -> dishId == null
+				? null
+				: criteriaBuilder.equal(root.get("dish").get("id"), dishId);
 	}
 }
