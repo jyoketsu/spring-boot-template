@@ -3,6 +3,7 @@ package com.example.demo.util;
 import java.io.IOException;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.lang.NonNull;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -28,7 +29,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 	 * 如果令牌有效，则通过在 SecurityContext 中设置 Authentication 对象来认证用户。
 	 */
 	@Override
-	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
+	protected void doFilterInternal(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response, @NonNull FilterChain filterChain)
 			throws ServletException, IOException {
 		// 获取token
 		String token = parseJwt(request);
@@ -70,6 +71,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 		return null;
 	}
 
+	@SuppressWarnings("unused")
 	private String getJwtFromCookies(HttpServletRequest request) {
 		Cookie[] cookies = request.getCookies();
 		if (cookies != null) {

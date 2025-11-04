@@ -272,6 +272,12 @@ public class RecipeServiceImpl implements RecipeService {
 		dto.setIngredients(recipe.getRecipeIngredients().stream()
 				.map(this::convertIngredientToDTO)
 				.collect(Collectors.toList()));
+
+		Optional.ofNullable(recipe.getDish()).ifPresent(dish -> {
+			dto.setDishId(dish.getId());
+			dto.setDishName(dish.getName());
+		});
+
 		return dto;
 	}
 

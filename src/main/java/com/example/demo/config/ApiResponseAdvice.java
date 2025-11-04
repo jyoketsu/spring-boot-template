@@ -6,6 +6,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.server.ServerHttpRequest;
 import org.springframework.http.server.ServerHttpResponse;
+import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.RestController;
@@ -21,7 +22,7 @@ public class ApiResponseAdvice implements ResponseBodyAdvice<Object> {
 
 	@SuppressWarnings("rawtypes")
 	@Override
-	public boolean supports(MethodParameter returnType, Class converterType) {
+	public boolean supports(@NonNull MethodParameter returnType, @NonNull Class converterType) {
 		// 获取当前方法的返回类型
 		MediaType contentType = returnType.getContainingClass().getAnnotation(RestController.class) != null
 				? MediaType.APPLICATION_JSON
@@ -34,8 +35,13 @@ public class ApiResponseAdvice implements ResponseBodyAdvice<Object> {
 
 	@SuppressWarnings("rawtypes")
 	@Override
-	public Object beforeBodyWrite(@Nullable Object body, MethodParameter returnType, MediaType selectedContentType,
-			Class selectedConverterType, ServerHttpRequest request, ServerHttpResponse response) {
+	public Object beforeBodyWrite(
+			@Nullable Object body,
+			@NonNull MethodParameter returnType,
+			@NonNull MediaType selectedContentType,
+			@NonNull Class selectedConverterType,
+			@NonNull ServerHttpRequest request,
+			@NonNull ServerHttpResponse response) {
 
 		// 获取当前请求的 URI，判断是否为 Swagger 路径
 		RequestAttributes requestAttributes = RequestContextHolder.getRequestAttributes();

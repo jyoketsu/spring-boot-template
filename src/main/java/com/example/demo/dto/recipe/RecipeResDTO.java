@@ -16,4 +16,7 @@ public class RecipeResDTO {
 	private String content;
 
 	private List<IngredientDTO> ingredients;
+
+	private Long dishId;
+	private String dishName;
 }
