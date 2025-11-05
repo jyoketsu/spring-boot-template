@@ -54,14 +54,14 @@ jobs:
             cd /home/projects/spring-boot-template/
             # 写入环境变量文件，docker-compose 会自动读取 .env 里的变量
             cat > .env << EOT
-WECHAT_APPID=${{ secrets.WECHAT_APPID }}
-WECHAT_SECRET=${{ secrets.WECHAT_SECRET }}
-WECHAT_GRANT_TYPE=${{ secrets.WECHAT_GRANT_TYPE }}
-EOT
+            WECHAT_APPID=${{ secrets.WECHAT_APPID }}
+            WECHAT_SECRET=${{ secrets.WECHAT_SECRET }}
+            WECHAT_GRANT_TYPE=${{ secrets.WECHAT_GRANT_TYPE }}
+          EOT
             docker compose down
             docker compose up -d
             docker image prune -f  # 清理无用镜像
             rm -f /home/docker-images/demo-app.tar  # 新增清理tar文件
             rm -f /home/docker-images/demo-app.tar.gz  # 新增清理tar.gz文件
             echo "部署完成！"
-EOF
+         EOF
