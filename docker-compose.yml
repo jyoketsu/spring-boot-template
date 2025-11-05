@@ -35,6 +35,7 @@ services:
     depends_on:
       - mysql
     environment:
+      - SPRING_PROFILES_ACTIVE=mysql,redis,prod
       - DB_HOST=mysql
       - REDIS_HOST=redis
       - WECHAT_APPID=${WECHAT_APPID}

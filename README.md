@@ -197,7 +197,7 @@ GET /recipes/list/search?name=面条&description=辣&ingredients=肉丝 青椒
 - [AuthServiceImpl.java](src/main/java/com/example/demo/service/AuthServiceImpl.java)
   - loginByWechat
 
-## Dotenv
+## Dotenv (仅在 dev 环境下加载)
 - [pom.xml](./pom.xml)
 - [DotenvConfig.java](src/main/java/com/example/demo/config/DotenvConfig.java)
 - [application.properties](src/main/resources/application.properties)
