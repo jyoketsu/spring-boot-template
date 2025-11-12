@@ -6,6 +6,10 @@ import com.example.demo.model.Dish;
 import org.springframework.data.jpa.domain.Specification;
 
 public class DishSpecification {
+	public static Specification<Dish> hasId(Long id) {
+		return (root, query, criteriaBuilder) -> id == null ? null : criteriaBuilder.equal(root.get("id"), id);
+	}
+	
 	public static Specification<Dish> hasName(String name) {
 		return (root, query, criteriaBuilder) -> name == null || name.isEmpty()
 				? null

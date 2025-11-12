@@ -30,16 +30,17 @@ public class DishController {
 	private DishService dishService;
 
 	@GetMapping
-	public Page<DishListDTO> getAllRecipes(
+	public Page<DishListDTO> getAllDishes(
+			@RequestParam(required = false) Long id,
 			@RequestParam(required = false) String name,
 			@RequestParam(required = false) Long categoryId,
 			@RequestParam(defaultValue = "0") int page,
 			@RequestParam(defaultValue = "10") int size) {
-		return dishService.getAllDishes(name, categoryId, page, size);
+		return dishService.getAllDishes(id, name, categoryId, page, size);
 	}
 
 	@GetMapping("/{id}")
-	public DishListDTO getIngredientById(@PathVariable Long id) {
+	public DishListDTO getDishById(@PathVariable Long id) {
 		return dishService.getDishById(id);
 	}
 

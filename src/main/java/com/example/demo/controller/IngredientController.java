@@ -40,11 +40,12 @@ public class IngredientController {
 
 	@GetMapping()
 	public Page<IngredientSummaryDTO> getIngredientPaged(
+			@RequestParam(required = false) Long id,
 			@RequestParam(required = false) String name,
 			@RequestParam(required = false) Long unitId,
 			@RequestParam(defaultValue = "0") int page,
 			@RequestParam(defaultValue = "10") int size) {
-		return ingredientService.getIngredientPaged(name, unitId, page, size);
+		return ingredientService.getIngredientPaged(id, name, unitId, page, size);
 	}
 
 	@GetMapping("/{id}")

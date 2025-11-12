@@ -11,7 +11,7 @@ import com.example.demo.model.Ingredient;
 public interface IngredientService {
 	List<IngredientSummaryDTO> getAll();
 
-	Page<IngredientSummaryDTO> getIngredientPaged(String name, Long unitId, int page, int size);
+	Page<IngredientSummaryDTO> getIngredientPaged(Long id, String name, Long unitId, int page, int size);
 
 	IngredientSummaryDTO getIngredientById(Long id);
 

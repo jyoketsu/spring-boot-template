@@ -33,9 +33,10 @@ public class IngredientServiceImpl implements IngredientService {
 	}
 
 	@Override
-	public Page<IngredientSummaryDTO> getIngredientPaged(String name, Long unitId, int page, int size) {
+	public Page<IngredientSummaryDTO> getIngredientPaged(Long id, String name, Long unitId, int page, int size) {
 		// 构建查询条件
-		Specification<Ingredient> specification = Specification.where(IngredientSpecification.hasName(name))
+		Specification<Ingredient> specification = Specification.where(IngredientSpecification.hasId(id))
+				.and(IngredientSpecification.hasName(name))
 				.and(IngredientSpecification.hasUnitId(unitId));
 
 		// 分页请求

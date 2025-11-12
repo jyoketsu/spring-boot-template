@@ -5,6 +5,10 @@ import com.example.demo.model.Ingredient;
 import org.springframework.data.jpa.domain.Specification;
 
 public class IngredientSpecification {
+	// 按id精确查询
+	public static Specification<Ingredient> hasId(Long id) {
+		return (root, query, criteriaBuilder) -> id == null ? null : criteriaBuilder.equal(root.get("id"), id);
+	}
 
 	// 按名称模糊查询
 	public static Specification<Ingredient> hasName(String name) {

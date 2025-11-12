@@ -9,7 +9,7 @@ import com.example.demo.dto.dish.DishListDTO;
 import com.example.demo.model.Dish;
 
 public interface DishService {
-	Page<DishListDTO> getAllDishes(String name, Long categoryId, Integer page, Integer size);
+	Page<DishListDTO> getAllDishes(Long id, String name, Long categoryId, Integer page, Integer size);
 
 	DishListDTO getDishById(Long id);
 

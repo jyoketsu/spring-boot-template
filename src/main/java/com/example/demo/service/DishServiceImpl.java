@@ -27,8 +27,9 @@ public class DishServiceImpl implements DishService {
 	}
 
 	@Override
-	public Page<DishListDTO> getAllDishes(String name, Long categoryId, Integer page, Integer size) {
-		Specification<Dish> specification = Specification.where(DishSpecification.hasName(name))
+	public Page<DishListDTO> getAllDishes(Long id, String name, Long categoryId, Integer page, Integer size) {
+		Specification<Dish> specification = Specification.where(DishSpecification.hasId(id))
+				.and(DishSpecification.hasName(name))
 				.and(DishSpecification.hasCategoryId(categoryId));
 
 		PageRequest pageable = PageRequest.of(page, size);
