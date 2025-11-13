@@ -15,5 +15,7 @@
 			"username": "myuser"
 		}
 	],
-	"java.configuration.updateBuildConfiguration": "interactive"
+	"java.configuration.updateBuildConfiguration": "interactive",
+	"trae.tab.enableRename": false,
+	"trae.tab.enableAutoImport": false
 }

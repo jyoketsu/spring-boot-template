@@ -2,6 +2,7 @@ package com.example.demo.service;
 
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.domain.Specification;
@@ -20,11 +21,8 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class DishServiceImpl implements DishService {
 
-	private final DishRepository dishRepository;
-
-	public DishServiceImpl(DishRepository dishRepository) {
-		this.dishRepository = dishRepository;
-	}
+	@Autowired
+	private DishRepository dishRepository;
 
 	@Override
 	public Page<DishListDTO> getAllDishes(Long id, String name, Long categoryId, Integer page, Integer size) {
