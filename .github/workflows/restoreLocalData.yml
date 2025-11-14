@@ -17,6 +17,10 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           known_hosts: ${{ secrets.KNOWN_HOSTS }}
 
+      - name: Copy files to server
+        run: |
+          scp ./mysql_backups/* root@47.102.193.24:/home/projects/spring-boot-template/
+
       - name: Restore local data
         run: |
           ssh root@47.102.193.24 << EOF
