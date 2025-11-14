@@ -19,7 +19,7 @@ jobs:
 
       - name: Copy files to server
         run: |
-          scp ./mysql_backups/* root@47.102.193.24:/home/projects/spring-boot-template/
+          scp ./mysql_backups root@47.102.193.24:/home/projects/spring-boot-template/
 
       - name: Restore local data
         run: |
