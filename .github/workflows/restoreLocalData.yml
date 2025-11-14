@@ -1,0 +1,26 @@
+name: Restore local data
+
+on:
+  workflow_dispatch: # 手动触发
+
+jobs:
+  restore-data:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Install SSH key
+        uses: shimataro/ssh-key-action@v2
+        with:
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          known_hosts: ${{ secrets.KNOWN_HOSTS }}
+
+      - name: Restore local data
+        run: |
+          ssh root@47.102.193.24 << EOF
+            cd /home/projects/spring-boot-template/
+            ./restore.sh
+            echo "本地数据恢复完成！"
+          EOF
