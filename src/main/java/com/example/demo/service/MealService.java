@@ -1,9 +1,9 @@
 package com.example.demo.service;
 
-import java.util.List;
+import java.util.*;
 
-import com.example.demo.model.Dish;
+import com.example.demo.dto.meal.MealPlanDTO;
 
 public interface MealService {
-	List<Dish> generateMeal();
+	List<MealPlanDTO> generateMealPlan(int days, boolean includeLunch, boolean includeDinner);
 }

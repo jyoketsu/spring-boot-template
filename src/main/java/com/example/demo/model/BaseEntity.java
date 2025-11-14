@@ -36,12 +36,12 @@ public class BaseEntity implements Serializable {
 
 	@CreatedDate
 	@Column(name = "create_time", nullable = true, updatable = false)
-	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Shanghai")
 	private LocalDateTime createTime;
 
 	@LastModifiedDate
 	@Column(name = "update_time", nullable = true)
-	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Shanghai")
 	private LocalDateTime updateTime;
 
 	// 必须有一个无参构造函数（可以是显式声明的或隐式的）。这是因为 JPA 在实例化实体类时，需要通过反射来创建对象，而反射需要调用无参构造函数。
