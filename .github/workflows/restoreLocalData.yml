@@ -23,8 +23,45 @@ jobs:
 
       - name: Restore local data
         run: |
-          ssh root@47.102.193.24 << EOF
+          ssh root@47.102.193.24 << 'EOF'
+            set -e  # 遇到错误立即退出
+            
             cd /home/projects/spring-boot-template/
-            ./restore.sh
+            
+            # 检查mysql_backups目录是否存在
+            if [ ! -d "mysql_backups" ]; then
+              echo "错误：mysql_backups 目录不存在"
+              exit 1
+            fi
+            
+            # 检查目录是否为空
+            if [ -z "$(ls -A mysql_backups/)" ]; then
+              echo "错误：mysql_backups 目录为空"
+              exit 1
+            fi
+            
+            # 获取最新的备份文件名（按时间倒序）
+            LATEST_BACKUP=$(ls -t mysql_backups/backup_*.sql 2>/dev/null | head -n1)
+            
+            # 检查是否找到备份文件
+            if [ -z "$LATEST_BACKUP" ]; then
+              echo "错误：未找到匹配的备份文件 (backup_*.sql)"
+              exit 1
+            fi
+            
+            # 验证文件存在且可读
+            if [ ! -f "$LATEST_BACKUP" ]; then
+              echo "错误：备份文件不存在: $LATEST_BACKUP"
+              exit 1
+            fi
+            
+            # 提取文件名（去掉路径）
+            BACKUP_FILENAME=$(basename "$LATEST_BACKUP")
+            
+            echo "使用最新备份文件: $BACKUP_FILENAME"
+            echo "文件路径: $LATEST_BACKUP"
+            
+            # 执行恢复
+            ./restore.sh "$BACKUP_FILENAME"
             echo "本地数据恢复完成！"
           EOF
