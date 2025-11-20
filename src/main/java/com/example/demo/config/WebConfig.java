@@ -15,6 +15,7 @@ import org.springframework.web.client.RestTemplate;
 @Configuration
 public class WebConfig {
 	@Bean
+	@SuppressWarnings("null")
 	public RestTemplate restTemplate(ClientHttpRequestFactory factory) {
 		RestTemplate restTemplate = new RestTemplate(factory);
 

@@ -52,7 +52,8 @@ public class AuthServiceImpl implements AuthService {
 
 	@Override
 	public User loginByWechat(String code) {
-		String url = weChatProperties.getCodeToSessionUrl() + "?appid={appid}&secret={secret}&js_code={js_code}&grant_type={grant_type}";
+		String url = weChatProperties.getCodeToSessionUrl()
+				+ "?appid={appid}&secret={secret}&js_code={js_code}&grant_type={grant_type}";
 		WeChatSessionResponse response = restTemplate.getForObject(
 				url,
 				WeChatSessionResponse.class,
@@ -60,7 +61,7 @@ public class AuthServiceImpl implements AuthService {
 				weChatProperties.getSecret(),
 				code,
 				weChatProperties.getGrantType());
-		
+
 		System.out.println("WeChatSessionResponse: " + response);
 
 		if (response == null || response.getOpenid() == null) {
@@ -101,6 +102,9 @@ public class AuthServiceImpl implements AuthService {
 		}
 
 		Long id = user.getId();
+		if (id == null) {
+			throw new IllegalArgumentException("User ID cannot be null");
+		}
 		return userRepository.findById(id)
 				.map(existingUser -> {
 					if (user.getUsername() != null && !user.getUsername().isEmpty()) {
@@ -112,6 +116,11 @@ public class AuthServiceImpl implements AuthService {
 					if (user.getPassword() != null && !user.getPassword().isEmpty()) {
 						existingUser.setPassword(passwordEncoder.encode(user.getPassword()));
 					}
+
+					if (existingUser == null) {
+						throw new IllegalStateException("Existing user cannot be null");
+					}
+
 					User updatedUser = userRepository.save(existingUser);
 					return updatedUser;
 				})

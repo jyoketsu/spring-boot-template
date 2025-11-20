@@ -28,6 +28,7 @@ public class CaptchaController {
 	private RedisTemplate<String, Object> redisTemplate;
 
 	@GetMapping("/captcha")
+	@SuppressWarnings("null")
 	public void getCaptcha(HttpServletResponse response) throws IOException {
 		// 生成验证码文本
 		String captchaText = kaptchaProducer.createText();

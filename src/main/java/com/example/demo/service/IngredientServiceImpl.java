@@ -50,6 +50,7 @@ public class IngredientServiceImpl implements IngredientService {
 	}
 
 	@Override
+	@SuppressWarnings("null")
 	public IngredientSummaryDTO getIngredientById(Long id) {
 		Ingredient ingredient = ingredientRepository.findById(id)
 				.orElseThrow(() -> new ResourceNotFoundException("ingredient not found with id " + id));
@@ -73,6 +74,7 @@ public class IngredientServiceImpl implements IngredientService {
 	}
 
 	@Override
+	@SuppressWarnings("null")
 	public Ingredient updateIngredient(IngredientBodyDTO ingredientDTO) {
 		Dictionary unit = new Dictionary();
 		unit.setId(ingredientDTO.getUnitId());
@@ -87,12 +89,14 @@ public class IngredientServiceImpl implements IngredientService {
 	}
 
 	@Override
+	@SuppressWarnings("null")
 	public void deleteIngredient(Long id) {
 		ingredientRepository.deleteById(id);
 	}
 
 	@Override
 	@Transactional
+	@SuppressWarnings("null")
 	public void deleteIngredients(List<Long> ids) {
 		ingredientRepository.deleteAllByIdInBatch(ids);
 	}

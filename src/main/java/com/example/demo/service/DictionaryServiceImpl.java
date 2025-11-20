@@ -57,6 +57,7 @@ public class DictionaryServiceImpl implements DictionaryService {
 
 	@Override
 	@Cacheable(value = "dictionary", key = "#id")
+	@SuppressWarnings("null")
 	public Dictionary findById(Long id) {
 		System.out.println("Fetching dictionaries by dictType from database");
 		return dictionaryRepository.findById(id)
@@ -68,7 +69,9 @@ public class DictionaryServiceImpl implements DictionaryService {
 			@CacheEvict(value = "dictionaries", allEntries = true),
 			@CacheEvict(value = "dictTypes", allEntries = true)
 	})
+	@SuppressWarnings("null")
 	public Dictionary createDictionary(Dictionary dictionary) {
+
 		return dictionaryRepository.save(dictionary);
 	}
 
@@ -79,6 +82,9 @@ public class DictionaryServiceImpl implements DictionaryService {
 	})
 	public Dictionary updateDictionary(Dictionary dictionary) {
 		Long id = dictionary.getId();
+		if (id == null) {
+			throw new IllegalArgumentException("Dictionary ID cannot be null");
+		}
 		return dictionaryRepository.findById(id)
 				.map(existingDictionary -> {
 					existingDictionary.setDictType(dictionary.getDictType());
@@ -102,6 +108,7 @@ public class DictionaryServiceImpl implements DictionaryService {
 			@CacheEvict(value = "dictionaries", allEntries = true),
 			@CacheEvict(value = "dictTypes", allEntries = true)
 	})
+	@SuppressWarnings("null")
 	public void deleteDictionary(Long id) {
 		dictionaryRepository.deleteById(id);
 	}
@@ -112,6 +119,7 @@ public class DictionaryServiceImpl implements DictionaryService {
 			@CacheEvict(value = "dictionaries", allEntries = true),
 			@CacheEvict(value = "dictTypes", allEntries = true)
 	})
+	@SuppressWarnings("null")
 	public void deleteDictionaries(List<Long> ids) {
 		dictionaryRepository.deleteAllByIdInBatch(ids);
 	}

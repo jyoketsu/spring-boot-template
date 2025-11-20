@@ -50,6 +50,7 @@ public class DishServiceImpl implements DishService {
 	}
 
 	@Override
+	@SuppressWarnings("null")
 	public DishListDTO getDishById(Long id) {
 		Dish dish = dishRepository.findById(id)
 				.orElseThrow(() -> new ResourceNotFoundException("dish not found with id " + id));
@@ -71,6 +72,7 @@ public class DishServiceImpl implements DishService {
 	}
 
 	@Override
+	@SuppressWarnings("null")
 	public Dish updateDish(DishBodyDTO dishBodyDTO) {
 		return dishRepository.findById(dishBodyDTO.getId())
 				.map(existingDish -> {
@@ -93,12 +95,14 @@ public class DishServiceImpl implements DishService {
 	}
 
 	@Override
+	@SuppressWarnings("null")
 	public void deleteDish(Long id) {
 		dishRepository.deleteById(id);
 	}
 
 	@Override
 	@Transactional
+	@SuppressWarnings("null")
 	public void deleteDishes(List<Long> ids) {
 		dishRepository.deleteAllByIdInBatch(ids);
 	}

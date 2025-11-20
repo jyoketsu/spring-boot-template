@@ -76,6 +76,7 @@ public class AuthController {
 	 * @return 认证响应数据，包括JWT令牌
 	 */
 	@PostMapping("/login")
+	@SuppressWarnings("null")
 	public AuthResponseDTO login(@RequestHeader("Captcha-Id") String captchaId,
 			@RequestBody @Valid AuthRequestDTO request, HttpServletResponse response) {
 		// 验证验证码

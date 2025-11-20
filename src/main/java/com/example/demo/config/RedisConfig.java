@@ -25,6 +25,7 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
 public class RedisConfig {
 
 	@Bean
+	@SuppressWarnings("null")
 	public RedisTemplate<String, Object> redisTemplate(RedisConnectionFactory connectionFactory) {
 		RedisTemplate<String, Object> template = new RedisTemplate<>();
 		template.setConnectionFactory(connectionFactory);
@@ -45,6 +46,7 @@ public class RedisConfig {
 	}
 
 	@Bean
+	@SuppressWarnings("null")
 	public CacheManager cacheManager(RedisConnectionFactory connectionFactory) {
 		// 配置序列化方式，与 RedisTemplate 保持一致
 		// 配置自定义的 ObjectMapper

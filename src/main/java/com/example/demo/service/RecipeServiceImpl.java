@@ -94,6 +94,7 @@ public class RecipeServiceImpl implements RecipeService {
 	}
 
 	@Override
+	@SuppressWarnings("null")
 	public RecipeResDTO getRecipeById(Long id) {
 		Recipe recipe = recipeRepository.findById(id)
 				.orElseThrow(() -> new ResourceNotFoundException("recipe not found with id " + id));
@@ -101,17 +102,20 @@ public class RecipeServiceImpl implements RecipeService {
 	}
 
 	@Override
+	@SuppressWarnings("null")
 	public void deleteRecipe(Long id) {
 		recipeRepository.deleteById(id);
 	}
 
 	@Override
 	@Transactional
+	@SuppressWarnings("null")
 	public void deleteRecipes(List<Long> ids) {
 		recipeRepository.deleteAllByIdInBatch(ids);
 	}
 
 	@Override
+	@SuppressWarnings("null")
 	public RecipeIngredient addIngredient2Recipe(Long recipeId, Long ingredientId, Double quantity) {
 		RecipeIngredient recipeIngredient = new RecipeIngredient();
 
@@ -150,6 +154,7 @@ public class RecipeServiceImpl implements RecipeService {
 	 * @Transactional(rollbackFor = Exception.class)
 	 */
 	@Transactional(rollbackFor = Exception.class)
+	@SuppressWarnings("null")
 	public Recipe createRecipeWithIngredients(RecipeDTO recipeDTO) {
 		// 保存recipe
 		Recipe recipe = new Recipe();
@@ -191,6 +196,7 @@ public class RecipeServiceImpl implements RecipeService {
 
 	@Override
 	@Transactional(rollbackFor = Exception.class)
+	@SuppressWarnings("null")
 	public Recipe editRecipeWithIngredients(RecipeDTO recipeDTO) {
 		Long recipeId = recipeDTO.getId();
 		// 获取现有的 Recipe
