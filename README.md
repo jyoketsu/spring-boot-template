@@ -190,8 +190,40 @@ GET /recipes/list/search?name=面条&description=辣&ingredients=肉丝 青椒
 ## 备份数据库
 - [backup.sh](./backup.sh)
 
+此脚本用于备份 `mydatabase` 数据库。它会连接到正在运行的 MySQL Docker 容器，使用 `mysqldump` 导出数据，并通过 `gzip` 进行实时压缩，最终生成一个带有时间戳的 `.sql.gz` 文件。
+
+### 使用方法
+
+1. **添加执行权限** (只需操作一次):
+   ```bash
+   chmod +x backup.sh
+   ```
+
+2. **运行备份脚本**:
+   ```bash
+   ./backup.sh
+   ```
+
+   脚本执行后，会在项目根目录下的 `./mysql_backups/` 文件夹中创建一个名为 `backup_YYYY-MM-DD_HH-MM-SS.sql.gz` 的压缩备份文件。
+
 ## 恢复数据库
 - [restore.sh](./restore.sh)
+
+此脚本用于从一个 `.sql.gz` 备份文件中恢复 `mydatabase` 数据库。它会自动查找所有可用的备份文件，并提供一个交互式菜单供您选择。**请注意：这是一个危险操作，它会覆盖当前数据库的所有数据。**
+
+### 使用方法
+
+1. **添加执行权限** (只需操作一次):
+   ```bash
+   chmod +x restore.sh
+   ```
+
+2. **运行恢复脚本**:
+   ```bash
+   ./restore.sh
+   ```
+
+   脚本会列出所有在 `./mysql_backups/` 目录中找到的备份文件。您只需输入对应的数字并按回车，然后根据提示输入 `y` 确认，即可开始恢复过程。
 
 ## RestTemplate
 - [AuthServiceImpl.java](src/main/java/com/example/demo/service/AuthServiceImpl.java)
